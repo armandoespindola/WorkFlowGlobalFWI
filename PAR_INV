@@ -1,0 +1,77 @@
+# PARAMETERS FOR INVERSION
+
+SPECFEM_DIR=/m100/home/userexternal/aespindo/specfem3d_globe
+WORK_DIR=/m100_scratch/userexternal/aespindo
+SIMULATION_DIR=/m100_scratch/userexternal/aespindo/base_model
+WORKFLOW_DIR=/m100_scratch/userexternal/aespindo/worflow_inversion
+EVENT_FILE=event_list
+WORKFLOW_LOG_FILE=${WORK_DIR}/log_workflow
+RESULTS=${WORK_DIR}/ITER
+
+# We are following specfem default directory example
+# $SYNT_DATA_DIR/<event>/OUTPUT_FILES/<data_file>
+
+SYNT_DATA_DIR=/m100_scratch/userexternal/aespindo/base_model
+OBS_DATA_DIR=/m100_scratch/userexternal/aespindo/dq_model
+
+
+#########################################
+##### SBATCH PARAMETERS SIMULATIONS  ####
+#########################################
+
+SBATCH_FORWARD=forward.sbatch
+SBATCH_ADJOINT=adjoint.sbatch
+SBATCH_MESHER=mesher.sbatch
+
+##############################
+##### KERNEL PROCESSING ######
+##############################
+
+# KERNEL_SUM
+KERNEL_SUM_INPUT="${RESULTS}/event_kernel_sum"
+KERNEL_SUM_OUTPUT="${RESULTS}/kernel_sum.bp"
+
+# KERNEL SMOOTHING
+KERNEL_SMOOTH_INPUT="$KERNEL_SUM_OUTPUT"
+KERNEL_OUTPUT_FILE="${RESULTS}/gradient.bp"
+SIGMA_H="500.0"
+SIGMA_V="200.0"
+KERNEL_NAME="mu_kl_crust_mantle"
+GPU_MODE=".true."
+SBATCH_KERNEL=kernel_processing.sbatch
+
+
+
+##############################
+##### OPTIMIZATION ######
+##############################
+
+OPT_METHOD="SD"
+DIR_GRAD_OUTPUT=direction_${OPT_METHOD}.bp
+
+# SD
+GRAD_FILE="${RESULTS}/gradient.bp"
+PRECOND_FILE="${RESULTS}/precond.bp"
+SD_EXECUTABLE=./bin.kernel/xsteepDescent
+
+# NLCG
+
+# LBFGS
+
+
+SBATCH_OPT=compute_direction.sbatch
+
+
+##############################
+##### LINE SEARCH ############
+##############################
+
+# MODEL FILE
+MODEL_FILE=${RESULTS}/model_gll_0.bp
+LS_EXECUTABLE=./bin.kernel/xupdate_model_par
+SBATCH_LS=update_model.sbatch
+STEP_TRIALS=3
+OLD_ITER=0
+FVAL_OLD=""
+STEP_OLD=""
+GTP_OLD=""
