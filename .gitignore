@@ -2,7 +2,6 @@
 *.[oa]
 *~
 *.m
-*.sh
 *.out
 *.dat
 *.txt
