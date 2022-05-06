@@ -19,7 +19,7 @@ cd $SIMULATION_DIR
 
 job=$(sbatch $SBATCH_MESHER)
 
-slurm_monitor.sh "$job" 1 $nevent $verbose
+slurm_monitor.sh "$SBATCH_MESHER" $nevent $verbose
 check_status $? "$SBATCH_MESHER" 
 
 check_status 0 $(basename $0)

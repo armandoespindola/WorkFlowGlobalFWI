@@ -29,22 +29,19 @@ function compute_misfit(){
     cd $WORKFLOW_DIR
 
     cd proc
-    job=$(sbatch run_preprocessing.sbatch)
-    slurm_monitor.sh "$job" 1 1 $verbose
+    slurm_monitor.sh "run_preprocessing.sbatch" 1 $verbose
     check_status $?
     echo "run_preprocessing: done"
     cd ..
 
     cd measure
-    job=$(sbatch run_measureadj.sbatch)
-    slurm_monitor.sh "$job" 1 1 $verbose
+    slurm_monitor.sh "run_measureadj.sbatch" 1 $verbose
     check_status $?
     echo "run_measureadj: done"
     cd ..
 
     cd adjoint
-    job=$(sbatch run_pyadj_mt.sbatch)
-    slurm_monitor.sh "$job" 1 1 $verbose
+    slurm_monitor.sh "run_pyadj_mt.sbatch" 1 $verbose
     check_status $?
     echo "run_pyadj_mt: done"
     cd ..

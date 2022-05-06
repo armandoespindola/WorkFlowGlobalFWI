@@ -41,12 +41,12 @@ cp ${SBATCH_LS}.template $SBATCH_LS
 SOLVER_FILE="$SIMULATION_DIR/DATABASES_MPI/solver_data.bp"
 PAR_LS="$step ${RESULTS}/model_gll_0.bp $SOLVER_FILE $RESULTS/$DIR_GRAD_OUTPUT $RESULTS/"
 
-sed -i "s|:executable:|$LS_EXECUTABLE|g" $SBATCH_LS
+xssed -i "s|:executable:|$LS_EXECUTABLE|g" $SBATCH_LS
 sed -i "s|:parameters:|$PAR_LS|g" $SBATCH_LS
 
 
 job=$(sbatch $SBATCH_LS)
-slurm_monitor.sh "$job" 1 1 $verbose
+slurm_monitor.sh "$SBATCH_LS" 1 $verbose
 check_status $? "$SBATCH_LS" 
 
 mv $RESULTS/model_gll.bp $RESULTS/model_gll_test.bp

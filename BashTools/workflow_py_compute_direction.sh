@@ -51,7 +51,7 @@ then
     
     
     job=$(sbatch $SBATCH_OPT)
-    slurm_monitor.sh "$job" 1 1 $verbose
+    slurm_monitor.sh "$SBATCH_OPT" 1 $verbose
     check_status $? "$SBATCH_OPT"
 
     cp -v $DIR_GRAD_OUTPUT ${RESULTS}

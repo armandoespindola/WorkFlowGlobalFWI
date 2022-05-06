@@ -40,9 +40,7 @@ function submit_jobs_failed()
     do
 	#echo $job
 	local step_id=$(echo $job | cut -f2 -d_)
-	sacct  -Bj ${job} > ${job_path}/resubmit_job.sbatch
-	sed -i '/Batch/d' ${job_path}/resubmit_job.sbatch
-	sed -i '/---.*/d' ${job_path}/resubmit_job.sbatch
+	cp ${job_path}/$sbatch_file ${job_path}/resubmit_job.sbatch
 	sed -i "s/--array=.*/--array=${step_id}/g" ${job_path}/resubmit_job.sbatch
 	job_new=$(sbatch ${job_path}/resubmit_job.sbatch | cut -f4 -d" ")
 	echo $job "--->" ${job_new}_${step_id}
@@ -108,16 +106,17 @@ function get_job_id()
     }
 
 
+if [ $# -lt 3 ]
+then
+    echo "usage: ./slurm_monitor sbatch_file nstep_job verbose[false==0/true==1]"
+    exit 1
+fi
+
 #### MAIN PROGRAM
 
-output_sbatch=$1
-job_array=$2
-nstep_job=$3
-verbose=$4
-
-if [ -z "$verbose" ]; then
-    verbose=0
-fi
+sbatch_file=$1
+nstep_job=$2
+verbose=$3
 
 # Declere arrays
 
@@ -129,76 +128,57 @@ job_all=()
 job_path=$(pwd)
 
 
-
-if [ $# -lt 4 ]
-then
-    echo "usage: ./slurm_status_subroutine output_sbatch job_array[false==0/true==1] nstep_job [if job_array==1] verbose[false==0/true==1]"
-    exit 1
-fi
-
-JOBLOG_FILE="$(pwd)/slurm_monitor.log"
-
-if [ "$job_array" == "0" ]; then echo "NOT IMPLEMENTED YET"; exit 1;fi
+JOBLOG_FILE="${job_path}/slurm_monitor.log"
 
 
+# get job id
+job_id=""
+output_sbatch=$(sbatch ${sbatch_file})
+get_job_id "$output_sbatch"
+
+for ((i=1;i<=$nstep_job;i++))
+do
+    job_all[$i]="${job_id}_$i"
+done
 
 
-if [ "$job_array" == "1" ]
-then
+while [ ${#job_all[@]} -gt 0 ]; do
 
-
-    # get job id
-    job_id=""
-    get_job_id "$output_sbatch"
-
-    for ((i=1;i<=$nstep_job;i++))
-    do
-	job_all[$i]="${job_id}_$i"
-    done
+    spin_bar "Monitoring jobs - Total Jobs: $nstep_job - Jobs Done: ${#jobs_done_id[@]}" 30
     
-    
-    while [ ${#job_all[@]} -gt 0 ]; do
-
-	spin_bar "Monitoring jobs - Total Jobs: $nstep_job - Jobs Done: ${#jobs_done_id[@]}" 30
-	
-	# check status jobs
-	_check_status
-	# removes done and failed jobs
-	remove_jobs
+    # check status jobs
+    _check_status
+    # removes done and failed jobs
+    remove_jobs
 
 
-	if [ $verbose -eq 1 ]; then
-	    echo "###### LOG FILE ########" >$JOBLOG_FILE
-	    echo " "  >>$JOBLOG_FILE
-	    echo "###############" $(date) >>$JOBLOG_FILE
-	    echo "Running Jobs: " ${job_all[@]} >>$JOBLOG_FILE
-	    echo "----" >>$JOBLOG_FILE
-	    echo "Jobs Done: " ${jobs_done_id[@]} >>$JOBLOG_FILE
-	    echo "----" >>$JOBLOG_FILE
-	    echo "Jobs Failed: " ${jobs_fail_id[@]} >>$JOBLOG_FILE
-	    echo "----"  >>$JOBLOG_FILE
-	    echo "Jobs Submited As:" >>$JOBLOG_FILE
-	fi
-	
-
-	# Resubmit jobs
-	if [ ${#jobs_fail_id[@]} -gt 0 ]; then
-	    echo "Submiting Failed Jobs: " ${#jobs_fail_id[@]}
-	    submit_jobs_failed
-	    jobs_fail_idx=()
-	    jobs_fail_id=()
-	fi
-
-       	spin_bar "Monitoring jobs - Total Jobs: $nstep_job - Jobs Done: ${#jobs_done_id[@]}" 2
-    done
+    if [ $verbose -eq 1 ]; then
+	echo "###### LOG FILE ########" >$JOBLOG_FILE
+	echo " "  >>$JOBLOG_FILE
+	echo "###############" $(date) >>$JOBLOG_FILE
+	echo "Running Jobs: " ${job_all[@]} >>$JOBLOG_FILE
+	echo "----" >>$JOBLOG_FILE
+	echo "Jobs Done: " ${jobs_done_id[@]} >>$JOBLOG_FILE
+	echo "----" >>$JOBLOG_FILE
+	echo "Jobs Failed: " ${jobs_fail_id[@]} >>$JOBLOG_FILE
+	echo "----"  >>$JOBLOG_FILE
+	echo "Jobs Submited As:" >>$JOBLOG_FILE
+    fi
     
 
+    # Resubmit jobs
+    if [ ${#jobs_fail_id[@]} -gt 0 ]; then
+	echo "Submiting Failed Jobs: " ${#jobs_fail_id[@]}
+	submit_jobs_failed
+	jobs_fail_idx=()
+	jobs_fail_id=()
+    fi
 
-
-    
-fi
-
-
+    spin_bar "Monitoring jobs - Total Jobs: $nstep_job - Jobs Done: ${#jobs_done_id[@]}" 2
+done
 
 echo
+
+
+
 exit 0

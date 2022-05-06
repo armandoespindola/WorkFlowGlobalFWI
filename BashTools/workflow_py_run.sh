@@ -30,8 +30,7 @@ cd $WORKFLOW_DIR
 python generate_path_files.py folders
 python generate_path_files.py proc
 cd proc
-job=$(sbatch run_preprocessing.sbatch)
-slurm_monitor.sh "$job" 1 1 $verbose
+slurm_monitor.sh "run_preprocessing.sbatch" 1 $verbose
 check_status $? "run_preprocessing.sbatch"
 print_process "run_preprocessing: done"
 cd ..
@@ -41,8 +40,7 @@ then
     
     python generate_path_files.py windows
     cd windows
-    job=$(sbatch select_windows.sbatch)
-    slurm_monitor.sh "$job" 1 1 $verbose
+    slurm_monitor.sh "select_windows.sbatch" 1 $verbose
     check_status $? "select_windows.sbatch"
     print_process "select_windows: done"
     cd ..
@@ -51,32 +49,28 @@ fi
 
 python generate_path_files.py measure
 cd measure
-job=$(sbatch run_measureadj.sbatch)
-slurm_monitor.sh "$job" 1 1 $verbose
+slurm_monitor.sh "run_measureadj.sbatch" 1 $verbose
 check_status $? "run_measureadj.sbatch"
 print_process "run_measureadj: done"
 cd ..
 
 python generate_path_files.py stations
 cd stations
-job=$(sbatch extract_stations.sbatch)
-slurm_monitor.sh "$job" 1 1 $verbose
+slurm_monitor.sh "extract_stations.sbatch" 1 $verbose
 check_status $? "extract_stations.sbatch"
 print_process "extract_stations: done"
 cd ..
 
 python generate_path_files.py filter
 cd filter
-job=$(sbatch filter_windows.sbatch)
-slurm_monitor.sh "$job" 1 1 $verbose
+slurm_monitor.sh "filter_windows.sbatch" 1 $verbose
 check_status $? "filter_windows.sbatch"
 print_process "filter_windows: done"
 cd ..
 
 python generate_path_files.py adjoint
 cd adjoint
-job=$(sbatch run_pyadj_mt.sbatch)
-slurm_monitor.sh "$job" 1 1 $verbose
+slurm_monitor.sh "run_pyadj.sbatch" 1 $verbose
 check_status $? "run_pyadj.sbatch"
 print_process "run_pyadj_mt: done"
 cd ..
@@ -84,16 +78,14 @@ cd ..
 python generate_path_files.py weight_params
 python generate_path_files.py weight_paths
 cd weights
-job=$(sbatch calc_weights.sbatch)
-slurm_monitor.sh "$job" 1 1 $verbose
+slurm_monitor.sh "calc_weights.sbatch" 1 $verbose
 check_status $? "calc_weights.sbatch"
 print_process "calc_weights: done"
 cd ..
 
 python generate_path_files.py sum
 cd sum_adjoint
-job=$(sbatch sum_adjoint.sbatch)
-slurm_monitor.sh "$job" 1 1 $verbose
+slurm_monitor.sh "sum_adjoint.sbatch" 1 $verbose
 check_status $? "sum_adjoint.sbatch"
 print_process "sum_adjoint: done"
 cd ..

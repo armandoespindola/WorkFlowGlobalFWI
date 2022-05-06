@@ -80,7 +80,7 @@ sed -i "s/:GPU_MODE:/$GPU_MODE/g" $SBATCH_KERNEL
 
 
 job=$(sbatch $SBATCH_KERNEL)
-slurm_monitor.sh "$job" 1 1 $verbose
+slurm_monitor.sh "$SBATCH_KERNEL" 1 $verbose
 check_status $? "$SBATCH_KERNEL"
 
 check_status 0 $(basename $0)

@@ -29,10 +29,9 @@ check_status $?
 if [ $? -ne 0 ]; then echo " Mesh error "; exit 1; fi
 
 sed -i "s/--array=.*/--array=[1-${nevent}]/" $SBATCH_FORWARD
-job=$(sbatch $SBATCH_FORWARD)
 
 # DO NOT FORGET TO QUOTE THE JOB VARIABLE
-slurm_monitor.sh "$job" 1 $nevent $verbose
+slurm_monitor.sh "$SBATCH_FORWARD" $nevent $verbose
 check_status $? "$SBATCH_FORWARD" 
 
 check_status 0 $(basename $0)

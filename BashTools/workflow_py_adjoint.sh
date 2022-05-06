@@ -31,10 +31,9 @@ if [ $? -ne 0 ]; then echo " Mesh error "; exit 1; fi
 cd $SIMULATION_DIR
 
 sed -i "s/--array=.*/--array=[1-${nevent}]/" $SBATCH_ADJOINT
-job=$(sbatch $SBATCH_ADJOINT)
 
 # DO NOT FORGET TO QUOTE THE JOB VARIABLE
-slurm_monitor.sh "$job" 1 $nevent $verbose
+slurm_monitor.sh "$SBATCH_ADJOINT" $nevent $verbose
 check_status $? "$SBATCH_ADJOINT"
 
 check_status 0 $(basename $0)
