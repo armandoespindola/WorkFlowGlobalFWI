@@ -33,10 +33,18 @@ do
     cd DATA
     echo $(pwd)
     rm  -fv STATIONS_ADJOINT
-    ln -sf ${WORKFLOW_DIR}/sum_adjoint/output/STATIONS_ADJOINT.${ievent} STATIONS_ADJOINT
-    rm -rf SEM
+
+    if [ ! -e "${WORKFLOW_DIR}/sum_adjoint/output/STATIONS_ADJOINT.${ievent}" ]; then
+	echo "File not found: ${WORKFLOW_DIR}/sum_adjoint/output/STATIONS_ADJOINT.${ievent}"
+	exit 1
+    else
+	ln -sf ${WORKFLOW_DIR}/sum_adjoint/output/STATIONS_ADJOINT.${ievent} STATIONS_ADJOINT
+	rm -rf SEM
+    fi
+    
 
     cd ..
+
     
     if [ ! -d SEM ]; then
 	mkdir -p  SEM
@@ -45,7 +53,14 @@ do
 
     cd SEM
     rm -f *.h5
-    ln -sf ${WORKFLOW_DIR}/sum_adjoint/output/adjoint_sum.${ievent}.h5 adjoint.h5
+
+    if [ ! -e "${WORKFLOW_DIR}/sum_adjoint/output/adjoint_sum.${ievent}.h5" ]; then
+	echo "File not found: ${WORKFLOW_DIR}/sum_adjoint/output/adjoint_sum.${ievent}.h5"
+	exit 1
+    else
+	ln -sf ${WORKFLOW_DIR}/sum_adjoint/output/adjoint_sum.${ievent}.h5 adjoint.h5
+    fi
+    
     
 done
 

@@ -17,7 +17,6 @@ nevent=1
 
 cd $SIMULATION_DIR
 
-job=$(sbatch $SBATCH_MESHER)
 
 slurm_monitor.sh "$SBATCH_MESHER" $nevent $verbose
 check_status $? "$SBATCH_MESHER" 

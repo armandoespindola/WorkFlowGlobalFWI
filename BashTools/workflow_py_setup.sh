@@ -47,9 +47,21 @@ cd $WORKFLOW_DIR/seis/raw/
 for ifold in ${events[@]}; do
     # synthentic data
     rm -rvf *"${ifold}"*
-    cp -v  $SYNT_DATA_DIR/$ifold/OUTPUT_FILES/synthetic.h5 ${ifold}.synt.h5
-    # observed data
-    cp -v  $OBS_DATA_DIR/$ifold/OUTPUT_FILES/synthetic.h5 ${ifold}.obsd.h5
+
+    if [ ! -e  "$SYNT_DATA_DIR/$ifold/OUTPUT_FILES/synthetic.h5" ]; then
+	echo "File not found: $SYNT_DATA_DIR/$ifold/OUTPUT_FILES/synthetic.h5"
+	exit 1
+    else
+	cp -v  $SYNT_DATA_DIR/$ifold/OUTPUT_FILES/synthetic.h5 ${ifold}.synt.h5
+    fi
+
+    if [ ! -e "$OBS_DATA_DIR/$ifold/OUTPUT_FILES/synthetic.h5 ${ifold}.obsd.h5" ]; then
+	echo "File not found: $OBS_DATA_DIR/$ifold/OUTPUT_FILES/synthetic.h5 ${ifold}.obsd.h5"
+    else
+	# observed data
+	cp -v  $OBS_DATA_DIR/$ifold/OUTPUT_FILES/synthetic.h5 ${ifold}.obsd.h5
+    fi
+    
 done
 
 	     
