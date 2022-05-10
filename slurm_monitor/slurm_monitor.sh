@@ -1,6 +1,19 @@
 #!/bin/bash
 
-trap " cancel_jobs " ERR SIGINT 
+trap " cancel_jobs " ERR SIGINT
+
+function spin_bar(){
+    local message="$1"
+    local spin='-\|/'
+    local time_sleep=$2
+
+    for ((i=0;i<time_sleep;i++))
+    do
+	idx=$(( $i %4 ))
+	echo -ne "\r$message ${spin:$idx:1} ${spin:$idx:1} ${spin:$idx:1}"
+	sleep 1
+    done
+}
 
 function cancel_jobs(){
     for idx in ${!job_all[@]}

@@ -37,20 +37,3 @@ function check_status(){
 }
 
 export -f check_status
-
-
-function spin_bar(){
-    local message="$1"
-    local spin='-\|/'
-    local time_sleep=$2
-
-    for ((i=0;i<time_sleep;i++))
-    do
-	idx=$(( $i %4 ))
-	echo -ne "\r$message ${spin:$idx:1} ${spin:$idx:1} ${spin:$idx:1}"
-	sleep 1
-    done
-}
-
-
-export -f spin_bar
