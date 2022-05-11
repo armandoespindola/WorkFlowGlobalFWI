@@ -14,7 +14,8 @@ verbose=$2
 workflow_py_compile_binaries.sh $PAR_INV 1 2 1
 check_status $?
 
-nevent=$(grep -v ^# ${WORKFLOW_DIR}/${EVENT_FILE} | wc -l)
+events_list=$(grep -v ^# "${WORKFLOW_DIR}/${EVENT_FILE}" | sed "s/[a-z0]//g")
+events=$(echo $events_list | sed "s/ /,/g")
 
 cd $SIMULATION_DIR
 
@@ -30,10 +31,10 @@ if [ $? -ne 0 ]; then echo " Mesh error "; exit 1; fi
 
 cd $SIMULATION_DIR
 
-sed -i "s/--array=.*/--array=[1-${nevent}]/" $SBATCH_ADJOINT
+sed -i "s/--array=.*/--array=[${events}]/" $SBATCH_ADJOINT
 
 # DO NOT FORGET TO QUOTE THE JOB VARIABLE
-slurm_monitor.sh "$SBATCH_ADJOINT" $nevent $verbose
+slurm_monitor.sh "$SBATCH_ADJOINT" "$events_list" $verbose
 check_status $? "$SBATCH_ADJOINT"
 
 check_status 0 $(basename $0)

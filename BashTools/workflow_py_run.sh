@@ -70,7 +70,7 @@ cd ..
 
 python generate_path_files.py adjoint
 cd adjoint
-slurm_monitor.sh "run_pyadj.sbatch" 1 $verbose
+slurm_monitor.sh "run_pyadj_mt.sbatch" 1 $verbose
 check_status $? "run_pyadj.sbatch"
 print_process "run_pyadj_mt: done"
 cd ..

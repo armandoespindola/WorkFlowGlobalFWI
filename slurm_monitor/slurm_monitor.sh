@@ -149,7 +149,7 @@ job_id=""
 output_sbatch=$(sbatch ${sbatch_file})
 get_job_id "$output_sbatch"
 
-for ((i=1;i<=$nstep_job;i++))
+for i in $nstep_job
 do
     job_all[$i]="${job_id}_$i"
 done
@@ -157,7 +157,7 @@ done
 
 while [ ${#job_all[@]} -gt 0 ]; do
 
-    spin_bar "Monitoring jobs - Total Jobs: $nstep_job - Jobs Done: ${#jobs_done_id[@]}" 30
+    spin_bar "Monitoring jobs - Total Jobs: ${#job_all[@]} - Jobs Done: ${#jobs_done_id[@]}" 30
     
     # check status jobs
     _check_status
@@ -187,7 +187,7 @@ while [ ${#job_all[@]} -gt 0 ]; do
 	jobs_fail_id=()
     fi
 
-    spin_bar "Monitoring jobs - Total Jobs: $nstep_job - Jobs Done: ${#jobs_done_id[@]}" 2
+    spin_bar "Monitoring jobs - Total Jobs: ${#job_all[@]} - Jobs Done: ${#jobs_done_id[@]}" 2
 done
 
 echo
