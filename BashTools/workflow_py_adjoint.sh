@@ -14,7 +14,7 @@ verbose=$2
 workflow_py_compile_binaries.sh $PAR_INV 1 2 1
 check_status $?
 
-events_list=$(grep -v ^# "${WORKFLOW_DIR}/${EVENT_FILE}" | sed "s/[a-z0]//g")
+events_list=$(grep -v ^# "${WORKFLOW_DIR}/${EVENT_FILE}" | sed "s/[a-z]0*//g")
 events=$(echo $events_list | sed "s/ /,/g")
 
 cd $SIMULATION_DIR

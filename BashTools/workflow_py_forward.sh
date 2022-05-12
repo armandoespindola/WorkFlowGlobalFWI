@@ -20,7 +20,7 @@ check_status $?
 cd $WORK_DIR
 workflow_py_mesher.sh $PAR_INV $verbose
 
-events_list=$(grep -v ^# "${WORKFLOW_DIR}/${EVENT_FILE}" | sed "s/[a-z0]//g")
+events_list=$(grep -v ^# "${WORKFLOW_DIR}/${EVENT_FILE}" | sed "s/[a-z]0*//g")
 events=$(echo $events_list | sed "s/ /,/g")
 
 cd $SIMULATION_DIR
