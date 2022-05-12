@@ -47,10 +47,6 @@ then
     sed -i "s|:executable:|$SD_EXECUTABLE|g" $SBATCH_OPT
     sed -i "s|:parameters:|$PAR_SD|g" $SBATCH_OPT
 
-
-    
-    
-    job=$(sbatch $SBATCH_OPT)
     slurm_monitor.sh "$SBATCH_OPT" 1 $verbose
     check_status $? "$SBATCH_OPT"
 

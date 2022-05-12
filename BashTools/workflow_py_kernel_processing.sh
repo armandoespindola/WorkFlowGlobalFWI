@@ -77,9 +77,6 @@ sed -i "s|:OUTPUT_FILE:|$KERNEL_OUTPUT_FILE|g" $SBATCH_KERNEL
 sed -i "s/:GPU_MODE:/$GPU_MODE/g" $SBATCH_KERNEL
 
 
-
-
-job=$(sbatch $SBATCH_KERNEL)
 slurm_monitor.sh "$SBATCH_KERNEL" 1 $verbose
 check_status $? "$SBATCH_KERNEL"
 

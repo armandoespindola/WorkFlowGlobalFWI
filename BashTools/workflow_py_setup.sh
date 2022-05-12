@@ -55,8 +55,9 @@ for ifold in ${events[@]}; do
 	cp -v  $SYNT_DATA_DIR/$ifold/OUTPUT_FILES/synthetic.h5 ${ifold}.synt.h5
     fi
 
-    if [ ! -e "$OBS_DATA_DIR/$ifold/OUTPUT_FILES/synthetic.h5 ${ifold}.obsd.h5" ]; then
+    if [ ! -e "$OBS_DATA_DIR/$ifold/OUTPUT_FILES/synthetic.h5" ]; then
 	echo "File not found: $OBS_DATA_DIR/$ifold/OUTPUT_FILES/synthetic.h5 ${ifold}.obsd.h5"
+	exit 1
     else
 	# observed data
 	cp -v  $OBS_DATA_DIR/$ifold/OUTPUT_FILES/synthetic.h5 ${ifold}.obsd.h5
@@ -68,7 +69,7 @@ done
 
 # Setup bash scripts
 cd $WORK_DIR
-workflow_py_setup_scripts.sh $PAR_INV $account $nproc $narray $verbose
+workflow_py_setup_scripts.sh $PAR_INV "$account" $nproc $narray $verbose
 check_status $? 
 
 

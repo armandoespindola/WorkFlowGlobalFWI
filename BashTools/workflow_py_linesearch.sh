@@ -71,6 +71,11 @@ echo "step_trials : " $step_trials
 echo "line serach : " $linesearch
 echo "work dir : " $WORK_DIR
 
+if [ ! -e "$RESULTS/model_gll_0.bp" ]; then
+    echo "Copying $SIMULATION_DIR/DATA/GLL/model_gll.bp $RESULTS/model_gll_0.bp"
+    cp -v $SIMULATION_DIR/DATA/GLL/model_gll.bp $RESULTS/model_gll_0.bp
+fi
+
 
 if [ $OLD_ITER -eq 1 ]; then
     

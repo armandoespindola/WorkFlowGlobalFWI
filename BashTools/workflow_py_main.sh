@@ -29,11 +29,11 @@ check_status $?
 
 # Compute windows, misfit and adjoint source
 cd $WORK_DIR
-account=Pra22_5560
+account=""
 nproc=32
 narray=1
 # Set up workflow python
-workflow_py_setup.sh $PAR_INV $EVENT_FILE $account $nproc $narray $verbose
+workflow_py_setup.sh $PAR_INV $EVENT_FILE "$account" $nproc $narray $verbose
 check_status $?
 
 # Runs WorkFlow
@@ -64,7 +64,6 @@ check_status $?
 # Line Search
 
 #copy model to RESULTS folder
-cp -v $SIMULATION_DIR/DATA/GLL/model_gll.bp $RESULTS/model_gll_0.bp
 workflow_py_linesearch.sh $PAR_INV $verbose
 
 # Save Model
