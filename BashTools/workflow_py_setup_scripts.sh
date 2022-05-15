@@ -25,6 +25,24 @@ function ibex(){
     
 }
 
+
+function marconi(){
+    local file=$1
+
+    target=`echo $file | sed -e s/\.sh.template//g`
+    cp -v $file ${target}.sbatch
+    sed -i "s/:nproc:/$nproc/g" ${target}.sbatch
+    sed -i "s/:array:/$narray/g" ${target}.sbatch
+
+    if [[ -z $account ]]; then
+	sed -i "/:account:/d" ${target}.sbatch
+    else
+	sed -i "s/:account:/$account/g" ${target}.sbatch
+    fi
+    echo "$target is written."
+    
+}
+
 if [ $# -lt 5 ]; then
     echo "This program sets up sbatch scripts for workflow"
     echo "usage: ./workflow_py_setup_scripts.sh PAR_INV account nproc narray verbose[false==0/true==1]"; exit 1;
@@ -64,7 +82,6 @@ for template in "${templates[@]}"
 do
     ibex $template
 done
-
 
 check_status 0 $(basename $0)
 exit 0

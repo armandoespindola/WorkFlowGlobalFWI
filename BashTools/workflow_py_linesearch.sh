@@ -1,3 +1,4 @@
+#!/bin/bash
 trap " log_status 1 $(basename $0) " ERR
 
 
@@ -15,9 +16,12 @@ verbose=$2
 
 
 cd $WORKFLOW_DIR
-mpirun -np 1 python print_linesearch.py "."
-check_status $?
-cp -v  fval $RESULTS/
+if [ ! -e $RESULTS/fval ]; then
+    mpirun -np 1 python print_linesearch.py "."
+    check_status $?
+    cp -v  fval $RESULTS/
+fi
+
 
 cd $WORK_DIR
 
@@ -71,6 +75,11 @@ echo "step_trials : " $step_trials
 echo "line serach : " $linesearch
 echo "work dir : " $WORK_DIR
 
+# Removing previous files
+rm -f alpha
+rm -r steps
+rm -r status
+
 if [ ! -e "$RESULTS/model_gll_0.bp" ]; then
     echo "Copying $SIMULATION_DIR/DATA/GLL/model_gll.bp $RESULTS/model_gll_0.bp"
     cp -v $SIMULATION_DIR/DATA/GLL/model_gll.bp $RESULTS/model_gll_0.bp
@@ -79,8 +88,8 @@ fi
 
 if [ $OLD_ITER -eq 1 ]; then
     
-    mpirun -np 1 python line_search.py -workdir $WORK_DIR  -funcval $fval -funcval_old $fval_old  \
-	   -step $step -step_old $step_old -step_max 1.0 -gtg $gtg -gtp $gtp -gtp_old $gtp_old -step_trials $step_trials \
+    python line_search.py -workdir $WORK_DIR  -funcval $fval -funcval_old $fval_old  \
+	   -step $step -step_old $step_old -step_max 1000.0 -gtg $gtg -gtp $gtp -gtp_old $gtp_old -step_trials $step_trials \
 	   -line_search "$linesearch"
 
     check_status $?
