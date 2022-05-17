@@ -22,7 +22,7 @@ function cancel_jobs(){
 	scancel ${job_all[$idx]}
     done
 
-    check_status 1
+    exit 1
 }
 
 		     
@@ -157,7 +157,7 @@ done
 
 while [ ${#job_all[@]} -gt 0 ]; do
 
-    spin_bar "Monitoring jobs - Total Jobs: ${#job_all[@]} - Jobs Done: ${#jobs_done_id[@]}" 30
+    spin_bar "Monitoring jobs - Jobs left: ${#job_all[@]} - Jobs done: ${#jobs_done_id[@]}" 30
     
     # check status jobs
     _check_status
@@ -187,7 +187,7 @@ while [ ${#job_all[@]} -gt 0 ]; do
 	jobs_fail_id=()
     fi
 
-    spin_bar "Monitoring jobs - Total Jobs: ${#job_all[@]} - Jobs Done: ${#jobs_done_id[@]}" 2
+    spin_bar "Monitoring jobs - Jobs left: ${#job_all[@]} - Jobs done: ${#jobs_done_id[@]}" 2
 done
 
 echo

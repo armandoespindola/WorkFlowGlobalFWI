@@ -107,8 +107,8 @@ else
     
 fi
 
-if [ ! -e "step" ] || [ ! -e "status" ];then echo "status and step files from line search not found!";exit 1;fi
-step_ls=$(cat step)
+if [ ! -e "alpha" ] || [ ! -e "status" ];then echo "status and step files from line search not found!";exit 1;fi
+step_ls=$(cat alpha)
 status_ls=$(cat status)
 
 cd $WORK_DIR

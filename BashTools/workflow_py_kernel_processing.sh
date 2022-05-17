@@ -34,16 +34,6 @@ verbose=$2
 # Loading env variables
 . workflow_py_load_config.sh $PAR_INV $verbose
 
-
-
-if [ ! -d $RESULTS ]
-then
-    mkdir -p $RESULTS
-else
-    rm -f "$RESULTS"/*
-fi
-       
-
 # GPU KERNEL SMOOTHING
 
 SOLVER_FILE="$SIMULATION_DIR/DATABASES_MPI/solver_data.bp"

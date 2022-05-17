@@ -17,9 +17,32 @@ verbose=$2
 # Loading env variables and utilities
 . workflow_py_load_config.sh  $PAR_INV $verbose
 
+if [ -d $RESULTS ]; then
+    echo -n "The $(basename $RESULTS) folder already exists. Do you want to overwrite it? [y/n] "
+    read flag
 
+    if [ $flag == "y" ]; then
+	echo "Removing data from folder $(basename $RESULTS)"
+    elif [ $flag == "n" ]; then
+	echo "Please copy your data from $(basename $RESULTS) to another folder "
+	exit 1
+    else
+	echo " This is not and option "
+	exit 1
+    fi
+fi
+
+
+if [ ! -d $RESULTS ]
+then
+    mkdir -p $RESULTS
+else
+    rm -f "$RESULTS"/*
+fi
+	
 cd $WORK_DIR
 rm -fv $WORKFLOW_LOG_FILE
+    
 
 # Compute Forward Simulation
 cd $WORK_DIR
@@ -29,11 +52,9 @@ check_status $?
 
 # Compute windows, misfit and adjoint source
 cd $WORK_DIR
-account=""
-nproc=32
-narray=1
+
 # Set up workflow python
-workflow_py_setup.sh $PAR_INV $EVENT_FILE "$account" $nproc $narray $verbose
+workflow_py_setup.sh $PAR_INV $verbose
 check_status $?
 
 # Runs WorkFlow
@@ -66,10 +87,8 @@ check_status $?
 #copy model to RESULTS folder
 workflow_py_linesearch.sh $PAR_INV $verbose
 
-# Save Model
-
 # Finalize iteration
-
+workflow_py_finalize.sh $PAR_INV $verbose
 
 log_status 0 $(basename $0)
 exit 0
