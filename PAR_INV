@@ -16,12 +16,27 @@ OBS_DATA_DIR=/m100_scratch/userexternal/aespindo/dq_model
 
 
 #########################################
-##### SBATCH PARAMETERS SIMULATIONS  ####
+##### SBATCH FILES FOR SIMULATIONS  #####
 #########################################
 
 SBATCH_FORWARD=forward.sbatch
 SBATCH_ADJOINT=adjoint.sbatch
 SBATCH_MESHER=mesher.sbatch
+
+
+##############################################
+##### DATA PROCESSING SBATCH PARAMETERS ######
+##############################################
+
+DS_ACCOUNT="Pra22_5560"
+DS_PARTITION="m100_usr_preempt"
+DS_EXCLUSIVE="1"
+DS_NODE="1"
+DS_NTASK="32"
+DS_NARRAY="1"
+DS_TIME="01:00:00"
+DS_GPU=""
+
 
 ##############################
 ##### KERNEL PROCESSING ######
@@ -34,8 +49,8 @@ KERNEL_SUM_OUTPUT="${RESULTS}/kernel_sum.bp"
 # KERNEL SMOOTHING
 KERNEL_SMOOTH_INPUT="$KERNEL_SUM_OUTPUT"
 KERNEL_OUTPUT_FILE="${RESULTS}/gradient.bp"
-SIGMA_H="500.0"
-SIGMA_V="200.0"
+SIGMA_H="750.0"
+SIGMA_V="750.0"
 KERNEL_NAME="mu_kl_crust_mantle"
 GPU_MODE=".true."
 SBATCH_KERNEL=kernel_processing.sbatch
@@ -43,11 +58,11 @@ SBATCH_KERNEL=kernel_processing.sbatch
 
 
 ##############################
-##### OPTIMIZATION ######
+##### OPTIMIZATION ###########
 ##############################
 
 OPT_METHOD="SD"
-DIR_GRAD_OUTPUT=direction_${OPT_METHOD}.bp
+DIR_GRAD_OUTPUT=direction.bp
 
 # SD
 GRAD_FILE="${RESULTS}/gradient.bp"
@@ -55,6 +70,11 @@ PRECOND_FILE="${RESULTS}/precond.bp"
 SD_EXECUTABLE=./bin.kernel/xsteepDescent
 
 # NLCG
+GRAD_FILE_OLD=ITER1/gradient.bp
+DIRECTION_FILE_OLD=ITER1/direction.bp
+GRAD_FILE_NEW="${RESULTS}/gradient.bp"
+NLCG_EXECUTABLE=./bin.kernel/xcg_direction
+
 
 # LBFGS
 

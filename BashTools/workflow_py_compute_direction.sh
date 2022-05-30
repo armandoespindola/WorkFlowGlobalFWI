@@ -28,7 +28,7 @@ then
 
     if [ ! -e $GRAD_FILE ];then echo "Gradient file not found"; exit 1;fi
     #if [ ! -e $PRECOND_FILE ];then echo "Preconditioner file not found"; exit 1;fi
-    if [ -z $DIR_GRAD_OUTPUT ]; then echo "Direction output file is not defined";exit 1;fi
+    if [ -z $DIR_GRAD_OUTPUT ]; then echo "Direction output file not defined";exit 1;fi
 
 
 
@@ -56,6 +56,44 @@ then
 
     
 fi
+
+
+if [ "$method" == "NLCG" ]
+then
+    echo "Method: No Linear Conjugate Gradient ($method)"
+    echo " Checking input parameters"
+
+    if [ -z $GRAD_FILE_OLD ]; then echo "PAR_INV: GRAD_FILE_OLD not defined"; exit 1; fi
+    if [ -z $DIRECTION_FILE_OLD ]; then echo "PAR_INV: DIRECTION_FILE_OLD not defined"; exit 1; fi
+    if [ -z $GRAD_FILE_NEW ]; then echo "PAR_INV: GRAD_FILE_NEW not defined"; exit 1; fi
+    if [ -z $DIR_GRAD_OUTPUT ]; then echo "Direction output file not defined";exit 1;fi
+
+    if [ ! -e $GRAD_FILE_OLD ]; then echo "PAR_INV: GRAD_FILE_OLD not found"; exit 1; fi
+    if [ ! -e $DIRECTION_FILE_OLD ]; then echo "PAR_INV: DIRECTION_FILE_OLD is not found"; exit 1; fi
+
+    cd $SIMULATION_DIR
+    
+    if [ ! -e $NLCG_EXECUTABLE ]; then echo "$NLCG_EXECUTABLE not found"; exit 1; fi
+
+
+
+
+    cp $SBATCH_OPT.template $SBATCH_OPT
+
+    SOLVER_FILE="$SIMULATION_DIR/DATABASES_MPI/solver_data.bp"
+
+    PAR_NLCG="$GRAD_FILE_OLD $GRAD_FILE_NEW $DIRECTION_FILE_OLD $SOLVER_FILE $DIR_GRAD_OUTPUT"
+
+    sed -i "s|:executable:|$SD_EXECUTABLE|g" $SBATCH_OPT
+    sed -i "s|:parameters:|$PAR_NLCG|g" $SBATCH_OPT
+
+    slurm_monitor.sh "$SBATCH_OPT" 1 $verbose
+    check_status $? "$SBATCH_OPT"
+
+    cp -v $DIR_GRAD_OUTPUT ${RESULTS}
+    cp -v gtg ${RESULTS}
+    cp -v gtp ${RESULTS}
+    
 
 
 

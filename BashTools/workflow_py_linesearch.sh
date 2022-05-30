@@ -89,7 +89,7 @@ fi
 if [ $OLD_ITER -eq 1 ]; then
     
     python line_search.py -workdir $WORK_DIR  -funcval $fval -funcval_old $fval_old  \
-	   -step $step -step_old $step_old -step_max 1000.0 -gtg $gtg -gtp $gtp -gtp_old $gtp_old -step_trials $step_trials \
+	   -step $step -step_old $step_old -step_max 1.0e+7 -gtg $gtg -gtp $gtp -gtp_old $gtp_old -step_trials $step_trials \
 	   -line_search "$linesearch"
 
     check_status $?
@@ -100,7 +100,7 @@ if [ $OLD_ITER -eq 1 ]; then
     
 else
     python line_search.py -workdir "$WORK_DIR" -funcval "$fval"  \
-	   -step "$step" -step_max 10000.0 -gtg "$gtg" -gtp "$gtp" -step_trials "$step_trials" \
+	   -step "$step" -step_max 1.0e+7 -gtg "$gtg" -gtp "$gtp" -step_trials "$step_trials" \
 	   -linesearch "$linesearch"
 
     check_status $?

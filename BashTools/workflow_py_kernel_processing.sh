@@ -40,7 +40,10 @@ SOLVER_FILE="$SIMULATION_DIR/DATABASES_MPI/solver_data.bp"
 
 if [ ! -e $SOLVER_FILE ]; then echo "$SOLVER_FILE not found"; exit 1; fi
 
-
+if [ ! -e "$RESULTS/model_gll_0.bp" ]; then
+    echo "Copying $SIMULATION_DIR/DATA/GLL/model_gll.bp $RESULTS/model_gll_0.bp"
+    cp -v $SIMULATION_DIR/DATA/GLL/model_gll.bp $RESULTS/model_gll_0.bp
+fi
 
 # Create Event File
 cd $WORK_DIR
@@ -55,6 +58,7 @@ cp "$SBATCH_KERNEL.template" $SBATCH_KERNEL
 # Kernel Sum
 sed -i "s|:event_file:|$KERNEL_SUM_INPUT|g" $SBATCH_KERNEL
 sed -i "s|:output_file:|$KERNEL_SUM_OUTPUT|g" $SBATCH_KERNEL
+sed -i "s|:model_file:|${RESULTS}/model_gll_0.bp|g" $SBATCH_KERNEL
 
 # Kernel Smoothing
 

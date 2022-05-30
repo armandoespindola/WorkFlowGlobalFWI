@@ -82,13 +82,16 @@ cd $WORK_DIR
 workflow_py_compute_direction.sh $PAR_INV $OPT_METHOD $verbose
 check_status $?
 
+
 # Line Search
 
 #copy model to RESULTS folder
 workflow_py_linesearch.sh $PAR_INV $verbose
+check_status $?
 
 # Finalize iteration
 workflow_py_finalize.sh $PAR_INV $verbose
+check_status $?
 
 log_status 0 $(basename $0)
 exit 0

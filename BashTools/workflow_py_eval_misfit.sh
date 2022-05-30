@@ -40,11 +40,11 @@ function compute_misfit(){
     echo "run_measureadj: done"
     cd ..
 
-    cd adjoint
-    slurm_monitor.sh "run_pyadj_mt.sbatch" 1 $verbose
-    check_status $?
-    echo "run_pyadj_mt: done"
-    cd ..
+    # cd adjoint
+    # slurm_monitor.sh "run_pyadj_mt.sbatch" 1 $verbose
+    # check_status $?
+    # echo "run_pyadj_mt: done"
+    # cd ..
 
 
     mpirun -np 1 python print_linesearch.py "."
