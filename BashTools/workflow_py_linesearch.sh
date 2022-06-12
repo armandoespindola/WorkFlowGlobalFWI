@@ -66,12 +66,13 @@ fi
 cd $WORKFLOW_DIR
 cd line_search
 
-
+step_max=$(awk -v a="$gtg" 'BEGIN {b=0.15;print b/a}')
 echo "fval : " $fval
 echo "step : " $step
 echo "gtg : " $gtg
 echo "gtp : " $gtp
 echo "step_trials : " $step_trials
+echo "step_max : " $step_max
 echo "line serach : " $linesearch
 echo "work dir : " $WORK_DIR
 
@@ -79,6 +80,8 @@ echo "work dir : " $WORK_DIR
 rm -f alpha
 rm -r steps
 rm -r status
+
+
 
 if [ ! -e "$RESULTS/model_gll_0.bp" ]; then
     echo "Copying $SIMULATION_DIR/DATA/GLL/model_gll.bp $RESULTS/model_gll_0.bp"
@@ -89,7 +92,7 @@ fi
 if [ $OLD_ITER -eq 1 ]; then
     
     python line_search.py -workdir $WORK_DIR  -funcval $fval -funcval_old $fval_old  \
-	   -step $step -step_old $step_old -step_max 1.0e+7 -gtg $gtg -gtp $gtp -gtp_old $gtp_old -step_trials $step_trials \
+	   -step $step -step_old $step_old -step_max "$step_max" -gtg $gtg -gtp $gtp -gtp_old $gtp_old -step_trials $step_trials \
 	   -line_search "$linesearch"
 
     check_status $?
@@ -100,7 +103,7 @@ if [ $OLD_ITER -eq 1 ]; then
     
 else
     python line_search.py -workdir "$WORK_DIR" -funcval "$fval"  \
-	   -step "$step" -step_max 1.0e+7 -gtg "$gtg" -gtp "$gtp" -step_trials "$step_trials" \
+	   -step "$step" -step_max "$step_max" -gtg "$gtg" -gtp "$gtp" -step_trials "$step_trials" \
 	   -linesearch "$linesearch"
 
     check_status $?

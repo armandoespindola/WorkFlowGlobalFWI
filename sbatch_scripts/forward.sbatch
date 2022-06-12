@@ -1,31 +1,28 @@
 #!/bin/bash
 #SBATCH --job-name="FORWARD"
-#SBATCH --nodes=6
-#SBATCH --ntasks=24
+#SBATCH --nodes=12
+#SBATCH --ntasks=48
 #SBATCH --ntasks-per-node=4
 #SBATCH --ntasks-per-socket=2
-#SBATCH --array=[1-50]
 #SBATCH --gres=gpu:4
 #SBATCH --time=00:10:00
-#SBATCH --output=output/forward_%a.o
-#SBATCH --error=output/forward_%a.o
+#SBATCH --output=output/forward_:job_id:.o
+#SBATCH --error=output/forward_:job_id:.o
 #SBATCH --partition=m100_usr_preempt
+##SBATCH --partition=m100_usr_prod
 #SBATCH --account=Pra22_5560
 
 
 ###################################################
 
-NPROC=$SLURM_NTASKS
+NPROC=48
 
 ###################################################
-RUN_DIR=$(printf "run%04d" $SLURM_ARRAY_TASK_ID)
-cd $RUN_DIR
+
 
 echo "running simulation: `date`"
 echo "directory: `pwd`"
 echo
-
-
 
 # Preparing Simulation
 
@@ -36,7 +33,6 @@ echo `date`
 # spectrum-mpi
 mpirun --rank-by core -np $NPROC ./bin/xspecfem3D
 sleep 1
-rm -v DATA/Par_file
 
 # checks exit code
 if [[ $? -ne 0 ]]; then exit 1; fi

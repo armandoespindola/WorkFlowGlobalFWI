@@ -10,7 +10,7 @@ then
     echo "SD: Steepest Descent direction"
     echo "NCG: No-Linear Conjugate Gradient direction"
     echo "L-BFGS: Limited-memory BFGS direction"
-    echo "usage: workflow_py_compute_direction.sh PAR_INV method[\"SD\"/\"NCG\"/\"LBFGS\"] verbose[false==0/true==1]"
+    echo "usage: workflow_py_compute_direction.sh PAR_INV method[\"SD\"/\"NLCG\"/\"LBFGS\"] verbose[false==0/true==1]"
     exit 
 fi
 
@@ -66,7 +66,7 @@ then
     if [ -z $GRAD_FILE_OLD ]; then echo "PAR_INV: GRAD_FILE_OLD not defined"; exit 1; fi
     if [ -z $DIRECTION_FILE_OLD ]; then echo "PAR_INV: DIRECTION_FILE_OLD not defined"; exit 1; fi
     if [ -z $GRAD_FILE_NEW ]; then echo "PAR_INV: GRAD_FILE_NEW not defined"; exit 1; fi
-    if [ -z $DIR_GRAD_OUTPUT ]; then echo "Direction output file not defined";exit 1;fi
+    if [ -z $DIR_GRAD_OUTPUT ]; then echo "Direction output file not defined"; exit 1; fi
 
     if [ ! -e $GRAD_FILE_OLD ]; then echo "PAR_INV: GRAD_FILE_OLD not found"; exit 1; fi
     if [ ! -e $DIRECTION_FILE_OLD ]; then echo "PAR_INV: DIRECTION_FILE_OLD is not found"; exit 1; fi
@@ -84,7 +84,7 @@ then
 
     PAR_NLCG="$GRAD_FILE_OLD $GRAD_FILE_NEW $DIRECTION_FILE_OLD $SOLVER_FILE $DIR_GRAD_OUTPUT"
 
-    sed -i "s|:executable:|$SD_EXECUTABLE|g" $SBATCH_OPT
+    sed -i "s|:executable:|$NLCG_EXECUTABLE|g" $SBATCH_OPT
     sed -i "s|:parameters:|$PAR_NLCG|g" $SBATCH_OPT
 
     slurm_monitor.sh "$SBATCH_OPT" 1 $verbose
@@ -94,7 +94,7 @@ then
     cp -v gtg ${RESULTS}
     cp -v gtp ${RESULTS}
     
-
+fi
 
 
 check_status 0 $(basename $0)

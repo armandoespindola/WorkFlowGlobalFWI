@@ -17,7 +17,7 @@ nevent=1
 
 cd $SIMULATION_DIR
 
-
+sed -i "s/NUMBER_OF_SIMULTANEOUS_RUNS.*/NUMBER_OF_SIMULTANEOUS_RUNS     = 1/g" $SIMULATION_DIR/DATA/Par_file
 slurm_monitor.sh "$SBATCH_MESHER" $nevent $verbose
 check_status $? "$SBATCH_MESHER" 
 

@@ -4,7 +4,6 @@
 #SBATCH --nodes=6
 #SBATCH --ntasks=24
 #SBATCH --ntasks-per-node=4
-#SBATCH --array=[1]
 #
 ##SBATCH --gres=gpu:4         # 4 gpus per node out of 4
 ##SBATCH --exclusive          # node allocation exclusive for this job

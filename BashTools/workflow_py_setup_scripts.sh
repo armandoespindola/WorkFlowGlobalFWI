@@ -9,7 +9,11 @@ function create_sbatch(){
     target=`echo $file | sed -e s/\.sh.template//g`
     cp -v $file ${target}.sbatch
 
-
+    sed -i "s/\%a/:job_id:/g" ${target}.sbatch
+    sed -i "/.*--array=.*/d" ${target}.sbatch
+    sed -i "s/^events=.*/events=(\$(\$gen list_events))/g" ${target}.sbatch                              
+    sed -i "s/\$events/\${events[((:job_id: - 1))]}/g" ${target}.sbatch
+    
     if [ -z $DS_ACCOUNT ]; then sed -i "/:account:/d" ${target}.sbatch
     else
 	sed -i "s/:account:/$DS_ACCOUNT/g" ${target}.sbatch
@@ -22,9 +26,9 @@ function create_sbatch(){
 
     if [ -z $DS_EXCLUSIVE ]; then sed -i "/.*exclusive.*/d" ${target}.sbatch ; fi
 
-    if [ -z $DS_NODES ]; then sed -i "/.*nodes.*/d" ${target}.sbatch
+    if [ -z $DS_NODE ]; then sed -i "/.*nodes.*/d" ${target}.sbatch
     else
-	sed -i "s/:nodes:/$DS_NODES/g" ${target}.sbatch
+	sed -i "s/:nodes:/$DS_NODE/g" ${target}.sbatch
     fi
 
     if [ -z $DS_NTASK ]; then sed -i "/.*tasks.*/d" ${target}.sbatch

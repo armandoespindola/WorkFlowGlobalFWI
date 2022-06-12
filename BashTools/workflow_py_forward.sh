@@ -31,11 +31,13 @@ check_status $?
 
 if [ $? -ne 0 ]; then echo " Mesh error "; exit 1; fi
 
-sed -i "s/--array=.*/--array=[${events}]/" $SBATCH_FORWARD
 
 # DO NOT FORGET TO QUOTE THE JOB VARIABLE
-slurm_monitor.sh "$SBATCH_FORWARD" "$events_list" $verbose
-check_status $? "$SBATCH_FORWARD" 
+# slurm_monitor.sh "$SBATCH_FORWARD" "$events_list" $verbose
+# check_status $? "$SBATCH_FORWARD"
+cd $WORK_DIR
+workflow_py_multiple_runs.sh $PAR_INV "forward" $verbose
+check_status $?
 
 check_status 0 $(basename $0)
 exit 0

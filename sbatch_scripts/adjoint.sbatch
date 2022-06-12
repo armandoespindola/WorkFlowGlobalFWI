@@ -3,13 +3,13 @@
 #SBATCH --nodes=6
 #SBATCH --ntasks=24
 #SBATCH --ntasks-per-node=4
-#SBATCH --array=[1-50]
 #SBATCH --gres=gpu:4
 #SBATCH --exclusive 
 #SBATCH --time=00:15:00
-#SBATCH --output=output/adjoint_%a.o
-#SBATCH --error=output/adjoint_%a.o
+#SBATCH --output=output/adjoint_:job_id:.o
+#SBATCH --error=output/adjoint_:job_id:.o
 #SBATCH --partition=m100_usr_preempt
+##SBATCH --partition=m100_usr_prod
 #SBATCH --account=Pra22_5560
 
 ###################################################
@@ -17,8 +17,6 @@
 NPROC=$SLURM_NTASKS
 
 ###################################################
-RUN_DIR=$(printf "run%04d" $SLURM_ARRAY_TASK_ID)
-cd $RUN_DIR
 
 echo "running simulation: `date`"
 echo "directory: `pwd`"

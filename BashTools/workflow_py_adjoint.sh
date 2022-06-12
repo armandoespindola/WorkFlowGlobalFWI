@@ -29,13 +29,16 @@ check_status $?
 
 if [ $? -ne 0 ]; then echo " Mesh error "; exit 1; fi
 
-cd $SIMULATION_DIR
+# cd $SIMULATION_DIR
 
-sed -i "s/--array=.*/--array=[${events}]/" $SBATCH_ADJOINT
+# sed -i "s/--array=.*/--array=[${events}]/" $SBATCH_ADJOINT
 
-# DO NOT FORGET TO QUOTE THE JOB VARIABLE
-slurm_monitor.sh "$SBATCH_ADJOINT" "$events_list" $verbose
-check_status $? "$SBATCH_ADJOINT"
+# # DO NOT FORGET TO QUOTE THE JOB VARIABLE
+# slurm_monitor.sh "$SBATCH_ADJOINT" "$events_list" $verbose
+# check_status $? "$SBATCH_ADJOINT"
+cd $WORK_DIR
+workflow_py_multiple_runs.sh $PAR_INV "adjoint" $verbose
+check_status $?
 
 check_status 0 $(basename $0)
 exit 0

@@ -75,7 +75,7 @@ check_status $?
 cd $WORK_DIR
 workflow_py_kernel_processing.sh $PAR_INV $verbose
 check_status $?
-
+exit 0
 # Compute Direction
 
 cd $WORK_DIR

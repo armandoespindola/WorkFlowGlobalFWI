@@ -48,25 +48,25 @@ do
     # Set simulation for every run
     cd $ievent
 
-    rsync -av ../change_simulation_type.pl ./
+    #rsync -av ../change_simulation_type.pl ./
     #if [ -e ../DATA/GLL/model_gll.bp ]; then rsync -av ../DATA/model_gll.bp DATA/GLL/ ; fi
     rm  -v OUTPUT_FILES/*
     rm -v DATA/Par_file
-    rsync -av ../bin/xspecfem3D bin/
+    #rsync -av ../bin/xspecfem3D bin/
     rsync -av ../DATA/Par_file DATA/
-    rsync -av ../OUTPUT_FILES/*.txt OUTPUT_FILES/
-    rsync -av ../OUTPUT_FILES/*.h OUTPUT_FILES/
-    rm -rf DATABASES_MPI
-    mkdir DATABASES_MPI
-    cd DATABASES_MPI
-    ln -sf ../../DATABASES_MPI/addressing.txt
-    ln -sf ../../DATABASES_MPI/attenuation.bp
-    ln -sf ../../DATABASES_MPI/boundary.bp
-    ln -sf ../../DATABASES_MPI/proc000000_reg1_topo.bin
-    ln -sf ../../DATABASES_MPI/solver_data.bp
-    ln -sf ../../DATABASES_MPI/solver_data_mpi.bp
+    #rsync -av ../OUTPUT_FILES/*.txt OUTPUT_FILES/
+    #rsync -av ../OUTPUT_FILES/*.h OUTPUT_FILES/
+    #rm -rf DATABASES_MPI
+    #mkdir DATABASES_MPI
+    #cd DATABASES_MPI
+    #ln -sf ../../DATABASES_MPI/addressing.txt
+    #ln -sf ../../DATABASES_MPI/attenuation.bp
+    #ln -sf ../../DATABASES_MPI/boundary.bp
+    #ln -sf ../../DATABASES_MPI/proc000000_reg1_topo.bin
+    #ln -sf ../../DATABASES_MPI/solver_data.bp
+    #ln -sf ../../DATABASES_MPI/solver_data_mpi.bp
     cd ../
-    cd ../
+    #cd ../
 done
 
 

@@ -10,14 +10,16 @@ function create_event_file_specfem(){
     events=($(grep -v ^# $event_file))
 
     echo $nevent > $1
+    echo $nevent > $2
     for ievent in ${events[@]}
     do
-	local name_file="kernels.bp"
-	local path="$SIMULATION_DIR/${ievent}/OUTPUT_FILES/$name_file"
-	echo "1.0" >> $1
-	echo $path >> $1
+        local name_file="kernels.bp"
+        local path="$SIMULATION_DIR/${ievent}/OUTPUT_FILES"
+        echo "1.0" >> $1
+        echo ${path}/$name_file >> $1
+        echo "$SIMULATION_DIR/${ievent}/DATABASES_MPI" >> $2
     done
-    
+
 
     }
 
@@ -47,7 +49,7 @@ fi
 
 # Create Event File
 cd $WORK_DIR
-create_event_file_specfem $KERNEL_SUM_INPUT
+create_event_file_specfem $KERNEL_SUM_INPUT $KERNEL_MASK_DIRS_FILE
 
 
 cd $SIMULATION_DIR
@@ -69,6 +71,13 @@ sed -i "s|:INPUT_FILE:|$KERNEL_SMOOTH_INPUT|g" $SBATCH_KERNEL
 sed -i "s|:SOLVER_FILE:|$SOLVER_FILE|g" $SBATCH_KERNEL
 sed -i "s|:OUTPUT_FILE:|$KERNEL_OUTPUT_FILE|g" $SBATCH_KERNEL
 sed -i "s/:GPU_MODE:/$GPU_MODE/g" $SBATCH_KERNEL
+
+# Kernel Mask Source
+
+sed -i "s|:KERNEL_FILE:|$KERNEL_MASK_INPUT|g" $SBATCH_KERNEL
+sed -i "s|:MASK_DIRS_FILE:|$KERNEL_MASK_DIRS_FILE|g" $SBATCH_KERNEL
+sed -i "s|:OUTPUT_FILE_MASK:|$KERNEL_MASK_OUTPUT|g" $SBATCH_KERNEL
+
 
 
 slurm_monitor.sh "$SBATCH_KERNEL" 1 $verbose

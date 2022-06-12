@@ -27,21 +27,21 @@ function copy_synthetic_data(){
 
 function compute_misfit(){
     cd $WORKFLOW_DIR
-
+    events_list=$(grep -v ^# "${WORKFLOW_DIR}/${EVENT_FILE}" | sed "s/[a-z]0*//g")
     cd proc
-    slurm_monitor.sh "run_preprocessing.sbatch" 1 $verbose
+    slurm_monitor.sh "run_preprocessing.sbatch" "$events_list" $verbose
     check_status $?
     echo "run_preprocessing: done"
     cd ..
 
     cd measure
-    slurm_monitor.sh "run_measureadj.sbatch" 1 $verbose
+    slurm_monitor.sh "run_measureadj.sbatch" "$events_list" $verbose
     check_status $?
     echo "run_measureadj: done"
     cd ..
 
     # cd adjoint
-    # slurm_monitor.sh "run_pyadj_mt.sbatch" 1 $verbose
+    # slurm_monitor.sh "run_pyadj_mt.sbatch" "$events_list" $verbose
     # check_status $?
     # echo "run_pyadj_mt: done"
     # cd ..

@@ -16,10 +16,13 @@ function spin_bar(){
 }
 
 function cancel_jobs(){
+    local _job
     for idx in ${!job_all[@]}
     do
-	echo "scancel ${job_all[$idx]}"
-	scancel ${job_all[$idx]}
+	
+	_job=${job_all[$idx]}
+	echo "scancel ${_job%_*}"
+	scancel ${_job%_*} 
     done
 
     exit 1
@@ -54,8 +57,10 @@ function submit_jobs_failed()
 	#echo $job
 	local step_id=$(echo $job | cut -f2 -d_)
 	cp ${job_path}/$sbatch_file ${job_path}/resubmit_job.sbatch
-	sed -i "s/--array=.*/--array=${step_id}/g" ${job_path}/resubmit_job.sbatch
-	job_new=$(sbatch ${job_path}/resubmit_job.sbatch | cut -f4 -d" ")
+	sed -i "s/:job_id:/${step_id}/g" ${job_path}/resubmit_job.sbatch
+	# THIS LINE WAS MODIFIED FOR FRONTERA
+	#sed -i "s/--array=.*/--array=${step_id}/g" ${job_path}/resubmit_job.sbatch
+	job_new=$(sbatch ${job_path}/resubmit_job.sbatch | grep -o Submitted.* | cut -f4 -d" ")
 	echo $job "--->" ${job_new}_${step_id}
 	local end_idx=(${!job_all[@]})
 	end_idx=${end_idx[@]: -1}
@@ -63,6 +68,8 @@ function submit_jobs_failed()
 	job_all[${_idx}]="${job_new}_${step_id}"
 	k=$(($k + 1))
     done
+    
+    sleep 5
     
     }
 
@@ -76,7 +83,9 @@ function _check_status()
 	#"usage: ./job_check_status.sh jobid step";
 	local _job=$(echo ${job_all[$job_idx]} | cut -f1 -d_)
 	local _step=$(echo ${job_all[$job_idx]} | cut -f2 -d_)
-	status=$(bash job_check_status.sh ${_job} ${_step})
+	# THIS LINE WAS MODIFIED FOR FRONTERA
+	#status=$(bash job_check_status.sh ${_job} ${_step})
+	status=$(bash job_check_status.sh ${_job})
 	if [ "$status" == "1" ]; then
 	    local end_idx=(${!jobs_done_id[@]})
 	    end_idx=${end_idx[@]: -1}
@@ -119,6 +128,27 @@ function get_job_id()
     }
 
 
+
+function generate_jobids(){
+local _sbatch_file=$1
+local _job_list="$2"
+
+for i in $_job_list
+do
+    job_id=""
+    cp $_sbatch_file ${_sbatch_file}.${i}
+    sed -i "s/:job_id:/${i}/g" ${_sbatch_file}.${i}
+    output_sbatch=$(echo $(sbatch ${sbatch_file}.${i}) | grep -o Submitted.*)
+    sleep 5
+    echo $output_sbatch
+    get_job_id "$output_sbatch"
+    job_all[$i]="${job_id}_$i"
+    rm -f ${_sbatch_file}.${i}
+done
+
+}
+
+
 if [ $# -lt 3 ]
 then
     echo "usage: ./slurm_monitor sbatch_file nstep_job verbose[false==0/true==1]"
@@ -144,25 +174,24 @@ job_path=$(pwd)
 JOBLOG_FILE="${job_path}/slurm_monitor.log"
 
 
-# get job id
-job_id=""
-output_sbatch=$(sbatch ${sbatch_file})
-get_job_id "$output_sbatch"
-
-for i in $nstep_job
-do
-    job_all[$i]="${job_id}_$i"
-done
-
+generate_jobids $sbatch_file "$nstep_job"
 
 while [ ${#job_all[@]} -gt 0 ]; do
 
-    spin_bar "Monitoring jobs - Jobs left: ${#job_all[@]} - Jobs done: ${#jobs_done_id[@]}" 30
+    spin_bar "Monitoring jobs - Jobs left: ${#job_all[@]} - Jobs done: ${#jobs_done_id[@]}" 10
     
     # check status jobs
     _check_status
     # removes done and failed jobs
     remove_jobs
+
+    # Resubmit jobs
+    if [ ${#jobs_fail_id[@]} -gt 0 ]; then
+	echo "Submiting Failed Jobs: " ${#jobs_fail_id[@]}
+	submit_jobs_failed
+	jobs_fail_idx=()
+	jobs_fail_id=()
+    fi
 
 
     if [ $verbose -eq 1 ]; then
@@ -177,16 +206,6 @@ while [ ${#job_all[@]} -gt 0 ]; do
 	echo "----"  >>$JOBLOG_FILE
 	echo "Jobs Submited As:" >>$JOBLOG_FILE
     fi
-    
-
-    # Resubmit jobs
-    if [ ${#jobs_fail_id[@]} -gt 0 ]; then
-	echo "Submiting Failed Jobs: " ${#jobs_fail_id[@]}
-	submit_jobs_failed
-	jobs_fail_idx=()
-	jobs_fail_id=()
-    fi
-
     spin_bar "Monitoring jobs - Jobs left: ${#job_all[@]} - Jobs done: ${#jobs_done_id[@]}" 2
 done
 
