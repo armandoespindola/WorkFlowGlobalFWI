@@ -24,7 +24,7 @@ nevents=${#events[@]}
 count=$((nevents/NRUNS))
 reminder=$((nevents%NRUNS))
 
-sed -i "s/NUMBER_OF_SIMULTANEOUS_RUNS.*/NUMBER_OF_SIMULTANEOUS_RUNS     = $NRUNS/g" $SIMULATION_DIR/DATA/Par_file
+sed -i "s/^NUMBER_OF_SIMULTANEOUS_RUNS.*/NUMBER_OF_SIMULTANEOUS_RUNS     = $NRUNS/g" $SIMULATION_DIR/DATA/Par_file
 
 for ((i=0;i<=$count;i++))
 do
@@ -32,7 +32,7 @@ do
     end_idx=$(((i+1) * NRUNS - 1))
     
     if [ $i -eq $count ] && [ $reminder -gt 0 ]; then
-	sed -i "s/NUMBER_OF_SIMULTANEOUS_RUNS.*/NUMBER_OF_SIMULTANEOUS_RUNS     = $reminder/g" $SIMULATION_DIR/DATA/Par_file
+	sed -i "s/^NUMBER_OF_SIMULTANEOUS_RUNS.*/NUMBER_OF_SIMULTANEOUS_RUNS     = $reminder/g" $SIMULATION_DIR/DATA/Par_file
 	end_idx=$((i * NRUNS + reminder - 1))
     elif [ $i -eq $count ] && [ $reminder -eq 0 ]; then
 	break
@@ -85,9 +85,9 @@ do
     if [ $simulation == "forward" ]; then
 	echo "Forward Simulation"
 	sed -i "s:^NPROC.*:NPROC=$NPROC_TOTAL:" $SBATCH_FORWARD                                          
-        sed -i "s/^#SBATCH --ntasks=.*/#SBATCH --ntasks=$NPROC_TOTAL/" $SBATCH_FORWARD                   
+        sed -i "s/^#SBATCH --ntasks=.*/#SBATCH --ntasks=$PPN/" $SBATCH_FORWARD                   
         sed -i "s/^#SBATCH --nodes=.*/#SBATCH --nodes=$NODES/" $SBATCH_FORWARD                           
-        sed -i "s/^#SBATCH --ntasks-per-node=.*/#SBATCH --ntasks-per-node=$PPN/" $SBATCH_FORWARD
+        sed -i "s/^#SBATCH --ntasks-per-node=.*/#SBATCH --ntasks-per-node=$ARCH_PROC/" $SBATCH_FORWARD
 	slurm_monitor.sh "$SBATCH_FORWARD" "$events_list" $verbose
 	check_status $? "$SBATCH_FORWARD"
     fi
@@ -95,15 +95,17 @@ do
     if [ $simulation == "adjoint" ]; then
 	echo "Adjoint Simulation"
 	sed -i "s:^NPROC.*:NPROC=$NPROC_TOTAL:" $SBATCH_ADJOINT                                          
-        sed -i "s/^#SBATCH --ntasks=.*/#SBATCH --ntasks=$NPROC_TOTAL/" $SBATCH_ADJOINT                   
+        sed -i "s/^#SBATCH --ntasks=.*/#SBATCH --ntasks=$PPN/" $SBATCH_ADJOINT                   
         sed -i "s/^#SBATCH --nodes=.*/#SBATCH --nodes=$NODES/" $SBATCH_ADJOINT                           
-        sed -i "s/^#SBATCH --ntasks-per-node=.*/#SBATCH --ntasks-per-node=$PPN/" $SBATCH_ADJOINT
+        sed -i "s/^#SBATCH --ntasks-per-node=.*/#SBATCH --ntasks-per-node=$ARCH_PROC/" $SBATCH_ADJOINT
 	slurm_monitor.sh "$SBATCH_ADJOINT" "$events_list" $verbose
 	check_status $? "$SBATCH_ADJOINT"
     fi
     
      
 done
+
+sed -i "s/^NUMBER_OF_SIMULTANEOUS_RUNS.*/NUMBER_OF_SIMULTANEOUS_RUNS     = 1/g" $SIMULATION_DIR/DATA/Par_file
 
 check_status 0 $(basename $0)
 exit 0

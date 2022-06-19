@@ -22,8 +22,8 @@ OBS_DATA_DIR=/m100_scratch/userexternal/aespindo/dq_model
 SBATCH_FORWARD=forward.sbatch
 SBATCH_ADJOINT=adjoint.sbatch
 SBATCH_MESHER=mesher.sbatch
-
-
+NRUNS=2
+ARCH_PROC=4
 ##############################################
 ##### DATA PROCESSING SBATCH PARAMETERS ######
 ##############################################
@@ -34,7 +34,7 @@ DS_EXCLUSIVE="1"
 DS_NODE="1"
 DS_NTASK="32"
 DS_NARRAY="1"
-DS_TIME="01:00:00"
+DS_TIME="01:30:00"
 DS_GPU=""
 
 
@@ -44,17 +44,21 @@ DS_GPU=""
 
 # KERNEL_SUM
 KERNEL_SUM_INPUT="${RESULTS}/event_kernel_sum"
-KERNEL_SUM_OUTPUT="${RESULTS}/kernel_sum.bp"
+KERNEL_SUM_OUTPUT="${RESULTS}/raw_grad.bp"
+
+# KERNEL_MASK
+KERNEL_MASK_DIRS_FILE="${RESULTS}/mask_dirs_file"
+KERNEL_MASK_INPUT="${RESULTS}/raw_grad.bp"
+KERNEL_MASK_OUTPUT="${RESULTS}/raw_grad_masked.bp"
 
 # KERNEL SMOOTHING
-KERNEL_SMOOTH_INPUT="$KERNEL_SUM_OUTPUT"
+KERNEL_SMOOTH_INPUT="$KERNEL_MASK_OUTPUT"
 KERNEL_OUTPUT_FILE="${RESULTS}/gradient.bp"
-SIGMA_H="750.0"
-SIGMA_V="750.0"
+SIGMA_H="550.0"
+SIGMA_V="250.0"
 KERNEL_NAME="mu_kl_crust_mantle"
 GPU_MODE=".true."
 SBATCH_KERNEL=kernel_processing.sbatch
-
 
 
 ##############################
