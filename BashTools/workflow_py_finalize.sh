@@ -43,7 +43,8 @@ cd $WORK_DIR
 
 cp PAR_INV $RESULTS/
 
+cd $SIMULATION_DIR
+cp DATA/Par_file $RESULTS
 
 check_status 0 $(basename $0)
-
 exit 0

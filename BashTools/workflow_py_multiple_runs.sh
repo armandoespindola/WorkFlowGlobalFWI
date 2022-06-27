@@ -80,7 +80,7 @@ do
     NSIMUL=$(grep -o ^NUMBER_OF_SIMULTANEOUS.* $SIMULATION_DIR/DATA/Par_file | cut -f2 -d"=")            
     NPROC_TOTAL=$((NPROC * NSIMUL))                                                                      
     NODES=$(( (NPROC_TOTAL + (ARCH_PROC-1))/ARCH_PROC ))                                                 
-    PPN=$(( NPROC_TOTAL / NODES ))
+    PPN=$(( NODES * ARCH_PROC ))
 
     if [ $simulation == "forward" ]; then
 	echo "Forward Simulation"

@@ -9,8 +9,14 @@ function create_sbatch(){
     target=`echo $file | sed -e s/\.sh.template//g`
     cp -v $file ${target}.sbatch
 
+
+
+    ###### FRONTERA
+    sed -i "s/$line/${line}\nexport UCX_TLS=\"knem,dc_x\"/g" ${target}.sbatch
+    sed -i "s/mpirun.*-np/ibrun -n/g" ${target}.sbatch
+    ######
+    
     sed -i "s/\%a/:job_id:/g" ${target}.sbatch
-    sed -i "/.*--array=.*/d" ${target}.sbatch
     sed -i "s/^events=.*/events=(\$(\$gen list_events))/g" ${target}.sbatch                              
     sed -i "s/\$events/\${events[((:job_id: - 1))]}/g" ${target}.sbatch
     

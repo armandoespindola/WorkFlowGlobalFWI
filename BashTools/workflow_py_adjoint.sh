@@ -22,6 +22,11 @@ cd $SIMULATION_DIR
 copy_mesh2events.sh "${WORKFLOW_DIR}/${EVENT_FILE}"  $verbose
 check_status $?
 
+
+# Change simulation Par_file
+cp DATA/Par_file DATA/Par_file.org
+./change_simulation_type.pl -b
+
 cd $WORK_DIR
 
 workflow_py_copy_adjoint.sh $PAR_INV $verbose
@@ -39,6 +44,11 @@ if [ $? -ne 0 ]; then echo " Mesh error "; exit 1; fi
 cd $WORK_DIR
 workflow_py_multiple_runs.sh $PAR_INV "adjoint" $verbose
 check_status $?
+
+
+cd $SIMULATION_DIR
+mv DATA/Par_file.org DATA/Par_file
+./change_simulation_type.pl -F
 
 check_status 0 $(basename $0)
 exit 0

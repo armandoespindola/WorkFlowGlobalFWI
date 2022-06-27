@@ -42,6 +42,8 @@ then
 
     SOLVER_FILE="$SIMULATION_DIR/DATABASES_MPI/solver_data.bp"
 
+    if [ ! -e $SOLVER_FILE ];then echo "Solver file not found"; exit 1;fi
+
     PAR_SD="$GRAD_FILE $PRECOND_FILE $SOLVER_FILE $DIR_GRAD_OUTPUT"
 
     sed -i "s|:executable:|$SD_EXECUTABLE|g" $SBATCH_OPT
@@ -81,6 +83,8 @@ then
     cp $SBATCH_OPT.template $SBATCH_OPT
 
     SOLVER_FILE="$SIMULATION_DIR/DATABASES_MPI/solver_data.bp"
+
+    if [ ! -e $SOLVER_FILE ];then echo "Solver file not found"; exit 1;fi
 
     PAR_NLCG="$GRAD_FILE_OLD $GRAD_FILE_NEW $DIRECTION_FILE_OLD $SOLVER_FILE $DIR_GRAD_OUTPUT"
 

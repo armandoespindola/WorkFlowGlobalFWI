@@ -46,7 +46,7 @@ rm -fv $WORKFLOW_LOG_FILE
 
 # Compute Forward Simulation
 cd $WORK_DIR
-workflow_py_forward.sh $PAR_INV $verbose 
+workflow_py_forward.sh $PAR_INV 1 $verbose 
 check_status $?
 
 

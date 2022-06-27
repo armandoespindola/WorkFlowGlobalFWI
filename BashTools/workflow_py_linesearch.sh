@@ -48,8 +48,11 @@ if [ $OLD_ITER -eq 1 ]; then
        echo "Check values FVAL_OLD, STEP_OLD and GTP_OLD are defined"
        exit 1
    else
+       if [ ! -e $FVAL_OLD ]; then echo "$FVAL_OLD not found"; exit 1; fi
        fval_old=$(cat $FVAL_OLD)
+       if [ ! -e $STEP_OLD ]; then echo "$STEP_OLD not found"; exit 1; fi
        step_old=$(cat $STEP_OLD)
+       if [ ! -e $GTP_OLD ]; then echo "$GTP_OLD not found"; exit 1; fi
        gtp_old=$(cat $GTP_OLD)
    fi
 fi
@@ -67,14 +70,15 @@ cd $WORKFLOW_DIR
 cd line_search
 
 step_max=$(awk -v a="$gtg" 'BEGIN {b=0.15;print b/a}')
-echo "fval : " $fval
-echo "step : " $step
-echo "gtg : " $gtg
-echo "gtp : " $gtp
-echo "step_trials : " $step_trials
-echo "step_max : " $step_max
-echo "line serach : " $linesearch
-echo "work dir : " $WORK_DIR
+echo "# Line Search #" > $RESULTS/linesearch.par.dat
+echo "fval : " $fval >> $RESULTS/linesearch.par.dat
+echo "step : " $step >> $RESULTS/linesearch.par.dat
+echo "gtg : " $gtg >> $RESULTS/linesearch.par.dat
+echo "gtp : " $gtp >> $RESULTS/linesearch.par.dat
+echo "step_trials : " $step_trials >> $RESULTS/linesearch.par.dat
+echo "step_max : " $step_max >> $RESULTS/linesearch.par.dat
+echo "line serach : " $linesearch >> $RESULTS/linesearch.par.dat
+echo "work dir : " $WORK_DIR >> $RESULTS/linesearch.par.dat
 
 # Removing previous files
 rm -f alpha
@@ -122,7 +126,7 @@ if [ $status_ls -eq 1 ]; then
     workflow_py_update_model.sh $PAR_INV $step_ls $verbose
     check_status $?
 
-    mv $RESULTS/model_gll_test.bp $RESULTS/model_gll_new.bp
+    mv -v $RESULTS/model_gll_test.bp $RESULTS/model_gll_new.bp
 fi
 
 check_status 0 $(basename $0)

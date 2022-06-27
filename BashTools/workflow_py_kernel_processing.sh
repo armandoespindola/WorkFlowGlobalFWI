@@ -3,7 +3,7 @@
 trap " check_status 1 $(basename $0)  " ERR
 
 function create_event_file_specfem(){
-
+    local status=0
     local event_file="${WORKFLOW_DIR}/${EVENT_FILE}"
     if [ ! -e $event_file ]; then echo "No $event_file file found. Please check!" ; exit 1; fi
     nevent=$(grep -v ^# $event_file | wc -l)
@@ -18,9 +18,18 @@ function create_event_file_specfem(){
         echo "1.0" >> $1
         echo ${path}/$name_file >> $1
         echo "$SIMULATION_DIR/${ievent}/DATABASES_MPI" >> $2
+
+	if [ ! -e "${path}/$name_file" ]; then
+	    echo "File not found: ${path}/$name_file"
+	    status=1
+	fi
+	
     done
 
-
+    if [ $status -eq 1 ]; then
+	exit 1
+    fi
+    
     }
 
 if [ $# -lt 2 ]; then
@@ -50,7 +59,7 @@ fi
 # Create Event File
 cd $WORK_DIR
 create_event_file_specfem $KERNEL_SUM_INPUT $KERNEL_MASK_DIRS_FILE
-
+if [ $? -ne 0 ]; then echo " Error in event file specfem sum"; exit 1; fi
 
 cd $SIMULATION_DIR
 

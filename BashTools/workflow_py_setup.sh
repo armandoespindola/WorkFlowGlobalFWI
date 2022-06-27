@@ -69,8 +69,3 @@ check_status $?
 
 check_status 0 $(basename $0)
 exit 0
-
-
-
-
-
