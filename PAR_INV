@@ -81,7 +81,8 @@ NLCG_EXECUTABLE=./bin.kernel/xcg_direction
 
 
 # LBFGS
-
+LBFGS_PATH_FILE=$RESULTS/lbfgs_input
+LBFGS_EXECUTABLE=./bin.kernel/xlbfgs
 
 SBATCH_OPT=compute_direction.sbatch
 

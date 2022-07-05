@@ -61,15 +61,16 @@ fi
 
 if [ "$OPT_METHOD" == "SD" ] || [ "$OPT_METHOD" == "NLCG" ]; then
     linesearch="bracket"
+    step_max=$(awk -v a="$gtg" 'BEGIN {b=0.15;print b/a}')
 elif [ "$OPT_METHOD" == "LBFGS" ]; then
     linesearch="backtrack"
+    step_max=1.0
 fi
 
 
 cd $WORKFLOW_DIR
 cd line_search
 
-step_max=$(awk -v a="$gtg" 'BEGIN {b=0.15;print b/a}')
 echo "# Line Search #" > $RESULTS/linesearch.par.dat
 echo "fval : " $fval >> $RESULTS/linesearch.par.dat
 echo "step : " $step >> $RESULTS/linesearch.par.dat

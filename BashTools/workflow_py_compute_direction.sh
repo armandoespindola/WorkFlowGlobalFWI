@@ -101,5 +101,60 @@ then
 fi
 
 
+if [ "$method" == "LBFGS" ]
+then
+    echo "Method: LBFGS ($method)"
+    echo " Checking input parameters"
+
+    if [ -z $LBFGS_PATH_FILE ]; then echo "PAR_INV: LBFGS_PATH_FILE not defined"; exit 1; fi
+    if [ ! -e $LBFGS_PATH_FILE ]; then echo "PAR_INV: LBFGS_PATH_FILE not found"; exit 1; fi
+
+    file_line=$(cat $LBFGS_PATH_FILE)
+
+    kline=1
+    for iline in $file_line
+    do
+	echo "File config: " $iline
+	if [ $kline -eq 1 ]; then
+	    test=$(echo $iline | grep "^-\?[0-9]\+$")
+	    if [ -z $test ]; then echo "Check file $LBFGS_PATH_FILE - Number of previous gradients"
+				  exit 1; fi
+	else
+
+	if [ ! -e $iline ]; then echo "Check file $LBFGS_PATH_FILE - (File not found : $iline) "
+				 exit 1;
+	fi
+
+	fi
+	
+	kline=$((kline + 1))
+	    
+    done
+
+    cd $SIMULATION_DIR
+    cp $SBATCH_OPT.template $SBATCH_OPT
+
+    SOLVER_FILE="$SIMULATION_DIR/DATABASES_MPI/solver_data.bp"
+
+    if [ ! -e $SOLVER_FILE ];then echo "Solver file not found"; exit 1;fi
+
+    PAR_LBFGS="$LBFGS_PATH_FILE $SOLVER_FILE $DIR_GRAD_OUTPUT"
+
+    sed -i "s|:executable:|$LBFGS_EXECUTABLE|g" $SBATCH_OPT
+    sed -i "s|:parameters:|$PAR_LBFGS|g" $SBATCH_OPT
+
+    slurm_monitor.sh "$SBATCH_OPT" 1 $verbose
+    check_status $? "$SBATCH_OPT"
+
+    cp -v $DIR_GRAD_OUTPUT ${RESULTS}
+    cp -v gtg ${RESULTS}
+    cp -v gtp ${RESULTS}
+
+
+    
+fi
+
+
+
 check_status 0 $(basename $0)
 exit 0

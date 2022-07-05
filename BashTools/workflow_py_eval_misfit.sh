@@ -69,7 +69,7 @@ verbose=$2
 
 # Compute Forward
 
-workflow_py_forward.sh $PAR_INV $verbose
+workflow_py_forward.sh $PAR_INV 0 $verbose
 check_status $?
 
 # Compute Misfit
