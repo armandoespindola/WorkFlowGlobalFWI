@@ -1,0 +1,37 @@
+#!/bin/bash
+#SBATCH --job-name="FORWARD"
+#SBATCH --nodes=
+#SBATCH --ntasks=
+#SBATCH --ntasks-per-node=
+#SBATCH --time=
+#SBATCH --output=
+#SBATCH --error=
+#SBATCH -A 
+#SBATCH -p 
+
+#OPTIONAL_COMMANDS
+
+###################################################
+
+NPROC=
+
+###################################################
+
+echo "running simulation: `date`"
+echo "directory: `pwd`"
+echo
+
+# Preparing Simulation
+
+## Forward run
+echo
+echo "running solver..."
+echo `date`
+
+:mpibin: $NPROC ./bin/xspecfem3D
+
+# checks exit code
+if [ $? -ne 0 ]; then exit 1; fi
+echo "  forward run done: `date`"
+echo
+

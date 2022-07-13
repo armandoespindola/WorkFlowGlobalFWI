@@ -1,19 +1,19 @@
 #!/bin/bash
 #SBATCH --job-name="UPDATE"
-#SBATCH --nodes=1
-#SBATCH --ntasks=24
-#SBATCH --ntasks-per-node=24
-#SBATCH --ntasks-per-socket=12
-#SBATCH --array=[1]
-#SBATCH --time=00:10:00
-#SBATCH --output=output/update_%a.o
-#SBATCH --error=output/update_%a.o
-#SBATCH --partition=m100_usr_preempt
-#SBATCH --account=Pra22_5560
+#SBATCH --nodes=
+#SBATCH --ntasks=
+#SBATCH --time=
+#SBATCH --output=
+#SBATCH --error=
+#SBATCH -A 
+#SBATCH -p 
 
-NPROC=$SLURM_NTASKS
+###################################################
+NPROC=
+###################################################
 
-mpirun --rank-by core -np $NPROC :executable: :parameters:
+
+:mpibin: $NPROC :executable: :parameters:
 
 if [ $? -ne 0 ]; then
 echo "Update model"

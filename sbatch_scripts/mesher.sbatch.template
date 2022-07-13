@@ -1,0 +1,29 @@
+#!/bin/bash
+#SBATCH --job-name="MESHER"
+#SBATCH --nodes=
+#SBATCH --ntasks=
+#SBATCH --ntasks-per-node=
+#SBATCH --time=
+#SBATCH --output=
+#SBATCH --error=
+#SBATCH -A 
+#SBATCH -p
+
+#OPTIONAL_COMMANDS
+
+###################################################
+NPROC=
+###################################################
+
+mkdir -p OUTPUT_FILES
+rm -f OUTPUT_FILES/*
+echo
+echo "running mesher: `date`"
+echo "directory: `pwd`"
+echo
+
+:mpibin: $NPROC ./bin/xmeshfem3D
+
+if [[ $? -ne 0 ]]; then exit 1; fi
+
+echo "mesh run done: `date`"

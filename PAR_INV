@@ -1,9 +1,9 @@
 # PARAMETERS FOR INVERSION
 
-SPECFEM_DIR=/m100/home/userexternal/aespindo/specfem3d_globe
-WORK_DIR=/m100_scratch/userexternal/aespindo
-SIMULATION_DIR=/m100_scratch/userexternal/aespindo/base_model
-WORKFLOW_DIR=/m100_scratch/userexternal/aespindo/worflow_inversion
+SPECFEM_DIR=~/specfem3d_globe
+WORK_DIR=$SCRATCH
+SIMULATION_DIR=$WORK_DIR/basemodel
+WORKFLOW_DIR=$WORK_DIR/data_processing
 EVENT_FILE=event_list
 WORKFLOW_LOG_FILE=${WORK_DIR}/log_workflow
 RESULTS=${WORK_DIR}/ITER
@@ -11,8 +11,8 @@ RESULTS=${WORK_DIR}/ITER
 # We are following specfem default directory example
 # $SYNT_DATA_DIR/<event>/OUTPUT_FILES/<data_file>
 
-SYNT_DATA_DIR=/m100_scratch/userexternal/aespindo/base_model
-OBS_DATA_DIR=/m100_scratch/userexternal/aespindo/dq_model
+SYNT_DATA_DIR=$WORK_DIR/basemodel
+OBS_DATA_DIR=$WORK_DIR/dq_model
 
 
 #########################################
@@ -22,19 +22,20 @@ OBS_DATA_DIR=/m100_scratch/userexternal/aespindo/dq_model
 SBATCH_FORWARD=forward.sbatch
 SBATCH_ADJOINT=adjoint.sbatch
 SBATCH_MESHER=mesher.sbatch
-NRUNS=2
-ARCH_PROC=4
+NRUNS=8
+# NUMBER OF CORES IN COMPUTER ARCHITECTURE
+ARCH_PROC=56
 ##############################################
 ##### DATA PROCESSING SBATCH PARAMETERS ######
 ##############################################
 
-DS_ACCOUNT="Pra22_5560"
-DS_PARTITION="m100_usr_preempt"
-DS_EXCLUSIVE="1"
+DS_ACCOUNT="EAR21003"
+DS_PARTITION="flex"
+DS_EXCLUSIVE=""
 DS_NODE="1"
-DS_NTASK="32"
-DS_NARRAY="1"
-DS_TIME="01:30:00"
+DS_NTASK="56"
+DS_NARRAY=""
+DS_TIME="01:00:00"
 DS_GPU=""
 
 
@@ -54,18 +55,19 @@ KERNEL_MASK_OUTPUT="${RESULTS}/raw_grad_masked.bp"
 # KERNEL SMOOTHING
 KERNEL_SMOOTH_INPUT="$KERNEL_MASK_OUTPUT"
 KERNEL_OUTPUT_FILE="${RESULTS}/gradient.bp"
-SIGMA_H="550.0"
-SIGMA_V="250.0"
+SIGMA_H="700.0"
+SIGMA_V="150.0"
 KERNEL_NAME="mu_kl_crust_mantle"
-GPU_MODE=".true."
+GPU_MODE=".false."
 SBATCH_KERNEL=kernel_processing.sbatch
+
 
 
 ##############################
 ##### OPTIMIZATION ###########
 ##############################
 
-OPT_METHOD="SD"
+OPT_METHOD="LBFGS"
 DIR_GRAD_OUTPUT=direction.bp
 
 # SD
@@ -74,8 +76,8 @@ PRECOND_FILE="${RESULTS}/precond.bp"
 SD_EXECUTABLE=./bin.kernel/xsteepDescent
 
 # NLCG
-GRAD_FILE_OLD=ITER1/gradient.bp
-DIRECTION_FILE_OLD=ITER1/direction.bp
+GRAD_FILE_OLD=${WORK_DIR}/IT1_f1/gradient.bp
+DIRECTION_FILE_OLD=${WORK_DIR}/IT1_f1/direction.bp
 GRAD_FILE_NEW="${RESULTS}/gradient.bp"
 NLCG_EXECUTABLE=./bin.kernel/xcg_direction
 
@@ -83,6 +85,7 @@ NLCG_EXECUTABLE=./bin.kernel/xcg_direction
 # LBFGS
 LBFGS_PATH_FILE=$RESULTS/lbfgs_input
 LBFGS_EXECUTABLE=./bin.kernel/xlbfgs
+
 
 SBATCH_OPT=compute_direction.sbatch
 

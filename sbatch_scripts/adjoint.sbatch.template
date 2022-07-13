@@ -1,0 +1,28 @@
+#!/bin/bash
+#SBATCH --job-name="ADJOINT"
+#SBATCH --nodes=
+#SBATCH --ntasks=
+#SBATCH --ntasks-per-node=
+#SBATCH --time=
+#SBATCH --output=
+#SBATCH --error=
+#SBATCH -A 
+#SBATCH -p
+
+#OPTIONAL_COMMANDS
+
+###################################################
+NPROC=
+###################################################
+
+echo
+echo `date`
+echo "starting adjoint run in current directory $PWD"
+echo
+
+:mpibin: $NPROC ./bin/xspecfem3D
+
+# checks exit code
+if [ $? -ne 0 ]; then exit 1; fi
+echo "  adjoint run done: `date`"
+echo
