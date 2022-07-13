@@ -1,10 +1,10 @@
 trap " clean_data " ERR SIGINT
 
-function clean_data()
-{
+function clean_data() {
     rm -rvf $SIMULATION_DIR/run0*
     check_status 1 $(basename $0)
-    }
+    sed -i "s/^NUMBER_OF_SIMULTANEOUS_RUNS.*/NUMBER_OF_SIMULTANEOUS_RUNS     = 1/g" $SIMULATION_DIR/DATA/Par_file
+}
 
 if [ $# -lt 2 ]; then echo "usage: ./workflow_multiple_runs.sh PAR_INV simulation[forward/adjoint] verbose[false==0/true==1]"; exit 1; fi
 
@@ -72,32 +72,17 @@ do
 
     echo "Running events from ${events[$start_idx]} to ${events[$end_idx]}"
     events_list="1"
-    # DO NOT FORGET TO QUOTE THE JOB VARIABLE
-    NPROC_XI=$(grep -o NPROC_XI.* $SIMULATION_DIR/DATA/Par_file | cut -f2 -d"=")                         
-    NPROC_ETA=$(grep -o NPROC_ETA.* $SIMULATION_DIR/DATA/Par_file | cut -f2 -d"=")                       
-    NPROC=$((NPROC_XI * NPROC_ETA * 6))                                                                  
-                                                                                                         
-    NSIMUL=$(grep -o ^NUMBER_OF_SIMULTANEOUS.* $SIMULATION_DIR/DATA/Par_file | cut -f2 -d"=")            
-    NPROC_TOTAL=$((NPROC * NSIMUL))                                                                      
-    NODES=$(( (NPROC_TOTAL + (ARCH_PROC-1))/ARCH_PROC ))                                                 
-    PPN=$(( NODES * ARCH_PROC ))
 
     if [ $simulation == "forward" ]; then
 	echo "Forward Simulation"
-	sed -i "s:^NPROC.*:NPROC=$NPROC_TOTAL:" $SBATCH_FORWARD                                          
-        sed -i "s/^#SBATCH --ntasks=.*/#SBATCH --ntasks=$PPN/" $SBATCH_FORWARD                   
-        sed -i "s/^#SBATCH --nodes=.*/#SBATCH --nodes=$NODES/" $SBATCH_FORWARD                           
-        sed -i "s/^#SBATCH --ntasks-per-node=.*/#SBATCH --ntasks-per-node=$ARCH_PROC/" $SBATCH_FORWARD
+	edit_sbatch $SBATCH_FORWARD $$SIMULATION_DIR/DATA/Par_file
 	slurm_monitor.sh "$SBATCH_FORWARD" "$events_list" $verbose
 	check_status $? "$SBATCH_FORWARD"
     fi
 
     if [ $simulation == "adjoint" ]; then
 	echo "Adjoint Simulation"
-	sed -i "s:^NPROC.*:NPROC=$NPROC_TOTAL:" $SBATCH_ADJOINT                                          
-        sed -i "s/^#SBATCH --ntasks=.*/#SBATCH --ntasks=$PPN/" $SBATCH_ADJOINT                   
-        sed -i "s/^#SBATCH --nodes=.*/#SBATCH --nodes=$NODES/" $SBATCH_ADJOINT                           
-        sed -i "s/^#SBATCH --ntasks-per-node=.*/#SBATCH --ntasks-per-node=$ARCH_PROC/" $SBATCH_ADJOINT
+	edit_sbatch $SBATCH_ADJOINT $$SIMULATION_DIR/DATA/Par_file
 	slurm_monitor.sh "$SBATCH_ADJOINT" "$events_list" $verbose
 	check_status $? "$SBATCH_ADJOINT"
     fi

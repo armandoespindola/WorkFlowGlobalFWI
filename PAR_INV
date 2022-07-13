@@ -22,9 +22,13 @@ OBS_DATA_DIR=$WORK_DIR/dq_model
 SBATCH_FORWARD=forward.sbatch
 SBATCH_ADJOINT=adjoint.sbatch
 SBATCH_MESHER=mesher.sbatch
+
+# NUMBER OF SIMULTANEOUS RUNS
 NRUNS=8
 # NUMBER OF CORES IN COMPUTER ARCHITECTURE
 ARCH_PROC=56
+
+
 ##############################################
 ##### DATA PROCESSING SBATCH PARAMETERS ######
 ##############################################
@@ -39,9 +43,9 @@ DS_TIME="01:00:00"
 DS_GPU=""
 
 
-##############################
-##### KERNEL PROCESSING ######
-##############################
+##############################################
+############## KERNEL PROCESSING #############
+##############################################
 
 # KERNEL_SUM
 KERNEL_SUM_INPUT="${RESULTS}/event_kernel_sum"
@@ -59,8 +63,8 @@ SIGMA_H="700.0"
 SIGMA_V="150.0"
 KERNEL_NAME="mu_kl_crust_mantle"
 GPU_MODE=".false."
-SBATCH_KERNEL=kernel_processing.sbatch
 
+SBATCH_KERNEL=kernel_processing.sbatch
 
 
 ##############################
@@ -81,11 +85,9 @@ DIRECTION_FILE_OLD=${WORK_DIR}/IT1_f1/direction.bp
 GRAD_FILE_NEW="${RESULTS}/gradient.bp"
 NLCG_EXECUTABLE=./bin.kernel/xcg_direction
 
-
 # LBFGS
 LBFGS_PATH_FILE=$RESULTS/lbfgs_input
 LBFGS_EXECUTABLE=./bin.kernel/xlbfgs
-
 
 SBATCH_OPT=compute_direction.sbatch
 
@@ -97,9 +99,10 @@ SBATCH_OPT=compute_direction.sbatch
 # MODEL FILE
 MODEL_FILE=${RESULTS}/model_gll_0.bp
 LS_EXECUTABLE=./bin.kernel/xupdate_model_par
-SBATCH_LS=update_model.sbatch
 STEP_TRIALS=3
 OLD_ITER=0
 FVAL_OLD=""
 STEP_OLD=""
 GTP_OLD=""
+
+SBATCH_LS=update_model.sbatch
