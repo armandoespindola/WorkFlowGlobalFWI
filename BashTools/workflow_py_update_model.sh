@@ -34,8 +34,11 @@ if [ ! -e $LS_EXECUTABLE ]; then echo "$LS_EXECUTABLE not found"; exit 1; fi
 if [ ! -e "$SBATCH_LS.template" ] || [ -z $SBATCH_LS ]; then echo "SBATCH_LS not found";exit 1; fi
 
 
-cp ${SBATCH_LS}.template $SBATCH_LS
 
+
+edit_sbatch "$SBATCH_LS" $SIMULATION_DIR/DATA/Par_file
+sed -i "s/^#SBATCH --time=.*/#SBATCH --time=$LS_TIME/" $SBATCH_LS
+sed -i "s/^#SBATCH -p.*/#SBATCH -p $LS_PARTITION/" $SBATCH_LS
 
 #cp -v $MODEL_FILE ${RESULTS}/model_gll_0.bp
 SOLVER_FILE="$SIMULATION_DIR/DATABASES_MPI/solver_data.bp"

@@ -20,6 +20,12 @@ verbose=$3
 
 . workflow_py_load_config.sh $PAR_INV $verbose
 
+
+cd $SIMULATION_DIR
+edit_sbatch "$SBATCH_OPT" $SIMULATION_DIR/DATA/Par_file
+sed -i "s/^#SBATCH --time=.*/#SBATCH --time=$OPT_TIME/" $SBATCH_OPT
+sed -i "s/^#SBATCH -p.*/#SBATCH -p $OPT_PARTITION/" $SBATCH_OPT
+
 if [ "$method" == "SD" ]
 then
     echo "Method: Steepest Descent ($method)"
@@ -38,7 +44,7 @@ then
     if [ ! -e $SD_EXECUTABLE ]; then echo "$SD_EXECUTABLE not found"; exit 1; fi
 
 
-    cp $SBATCH_OPT.template $SBATCH_OPT
+    #cp $SBATCH_OPT.template $SBATCH_OPT
 
     SOLVER_FILE="$SIMULATION_DIR/DATABASES_MPI/solver_data.bp"
 
@@ -80,7 +86,7 @@ then
 
 
 
-    cp $SBATCH_OPT.template $SBATCH_OPT
+    #cp $SBATCH_OPT.template $SBATCH_OPT
 
     SOLVER_FILE="$SIMULATION_DIR/DATABASES_MPI/solver_data.bp"
 
@@ -132,7 +138,7 @@ then
     done
 
     cd $SIMULATION_DIR
-    cp $SBATCH_OPT.template $SBATCH_OPT
+    #cp $SBATCH_OPT.template $SBATCH_OPT
 
     SOLVER_FILE="$SIMULATION_DIR/DATABASES_MPI/solver_data.bp"
 

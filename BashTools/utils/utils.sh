@@ -63,7 +63,16 @@ function edit_sbatch(){
     sed -i "s/^#SBATCH --ntasks=.*/#SBATCH --ntasks=$PPN/" $_sbatch_file
     sed -i "s/^#SBATCH --nodes=.*/#SBATCH --nodes=$NODES/" $_sbatch_file
     sed -i "s/^#SBATCH --ntasks-per-node=.*/#SBATCH --ntasks-per-node=$ARCH_PROC/" $_sbatch_file
-   
-    }
+    sed -i "s/^#SBATCH -A.*/#SBATCH -A $SBATCH_ACCOUNT/" $_sbatch_file
+
+    if [ ! -z $SBATCH_OPT ]
+    then
+	sed -i "s|^#OPTIONAL_COMMANDS.*|$SBATCH_OPT|" $_sbatch_file
+    fi
+
+    sed -i "s/:mpibin:/$MPI_EXEC/" $_sbatch_file
+    sed -i "s|:output_sbatch:|$SBATCH_DIR|" $_sbatch_file
+}
+
 
 export -f edit_sbatch

@@ -64,7 +64,10 @@ if [ $? -ne 0 ]; then echo " Error in event file specfem sum"; exit 1; fi
 cd $SIMULATION_DIR
 
 # Create Sbatch File
-cp "$SBATCH_KERNEL.template" $SBATCH_KERNEL
+
+edit_sbatch "$SBATCH_KERNEL" $SIMULATION_DIR/DATA/Par_file
+sed -i "s/^#SBATCH --time=.*/#SBATCH --time=$KERNEL_TIME/" $SBATCH_KERNEL
+sed -i "s/^#SBATCH -p.*/#SBATCH -p $KERNEL_PARTITION/" $SBATCH_KERNEL
 
 # Kernel Sum
 sed -i "s|:event_file:|$KERNEL_SUM_INPUT|g" $SBATCH_KERNEL

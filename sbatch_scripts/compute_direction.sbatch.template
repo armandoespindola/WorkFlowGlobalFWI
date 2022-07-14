@@ -3,8 +3,8 @@
 #SBATCH --nodes=
 #SBATCH --ntasks=
 #SBATCH --time=
-#SBATCH --output=
-#SBATCH --error=
+#SBATCH --output=:output_sbatch:/direction_:job_id:.o
+#SBATCH --error=:output_sbatch:/direction_:job_id:.o
 #SBATCH -A 
 #SBATCH -p 
 

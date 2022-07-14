@@ -4,8 +4,8 @@
 #SBATCH --ntasks=
 #SBATCH --ntasks-per-node=
 #SBATCH --time=
-#SBATCH --output=
-#SBATCH --error=
+#SBATCH --output=:output_sbatch:/adjoint_:job_id:.o
+#SBATCH --error=:output_sbatch:/adjoint_:job_id:.o
 #SBATCH -A 
 #SBATCH -p
 
