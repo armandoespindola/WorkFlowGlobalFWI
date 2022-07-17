@@ -8,8 +8,11 @@ EVENT_FILE=event_list
 WORKFLOW_LOG_FILE=${WORK_DIR}/log_workflow
 RESULTS=${WORK_DIR}/ITER
 
-# SBATCH OUTPUT DIRECTORY
+# SBATCH GENERAL PARAMETERS
 SBATCH_DIR=output
+MPIEXEC="srun -n"
+SBATCH_OPTIONAL=""
+SBATCH_ACCOUNT=""
 
 # We are following specfem default directory example
 # $SYNT_DATA_DIR/<event>/OUTPUT_FILES/<data_file>
@@ -44,7 +47,7 @@ ARCH_PROC=56
 ##### DATA PROCESSING SBATCH PARAMETERS ######
 ##############################################
 
-DS_ACCOUNT="EAR21003"
+DS_ACCOUNT=$SBATCH_ACCOUNT
 DS_PARTITION="flex"
 DS_EXCLUSIVE=""
 DS_NODE="1"

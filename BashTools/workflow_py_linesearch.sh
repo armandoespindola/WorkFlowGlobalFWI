@@ -64,7 +64,8 @@ if [ "$OPT_METHOD" == "SD" ] || [ "$OPT_METHOD" == "NLCG" ]; then
     step_max=$(awk -v a="$gtg" 'BEGIN {b=0.15;print b/a}')
 elif [ "$OPT_METHOD" == "LBFGS" ]; then
     linesearch="backtrack"
-    step_max=1.0
+    max_val=$(grep -o max_val.* $SIMULATION_DIR/output/direction_1.o | cut -d : -f2)
+    step_max=$(awk -v a="$max_val" 'BEGIN {b=0.15;print b/a}')
 fi
 
 

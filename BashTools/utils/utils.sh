@@ -67,10 +67,10 @@ function edit_sbatch(){
 
     if [ ! -z $SBATCH_OPT ]
     then
-	sed -i "s|^#OPTIONAL_COMMANDS.*|$SBATCH_OPT|" $_sbatch_file
+	sed -i "s|^#OPTIONAL_COMMANDS.*|$SBATCH_OPTIONAL|" $_sbatch_file
     fi
 
-    sed -i "s/:mpibin:/$MPI_EXEC/" $_sbatch_file
+    sed -i "s/:mpibin:/$MPIEXEC/" $_sbatch_file
     sed -i "s|:output_sbatch:|$SBATCH_DIR|" $_sbatch_file
 }
 
