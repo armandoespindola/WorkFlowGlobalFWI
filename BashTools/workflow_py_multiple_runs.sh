@@ -76,19 +76,19 @@ do
     if [ $simulation == "forward" ]; then
 	echo "Forward Simulation"
 	edit_sbatch "$SBATCH_FORWARD" $SIMULATION_DIR/DATA/Par_file
-	slurm_monitor.sh "$SBATCH_FORWARD" "$events_list" $verbose
-	check_status $? "$SBATCH_FORWARD"
 	sed -i "s/^#SBATCH --time=.*/#SBATCH --time=$FORWARD_TIME/" $SBATCH_FORWARD
 	sed -i "s/^#SBATCH -p.*/#SBATCH -p $FORWARD_PARTITION/" $SBATCH_FORWARD
+	slurm_monitor.sh "$SBATCH_FORWARD" "$events_list" $verbose
+	check_status $? "$SBATCH_FORWARD"
     fi
 
     if [ $simulation == "adjoint" ]; then
 	echo "Adjoint Simulation"
 	edit_sbatch "$SBATCH_ADJOINT" $SIMULATION_DIR/DATA/Par_file
-	slurm_monitor.sh "$SBATCH_ADJOINT" "$events_list" $verbose
-	check_status $? "$SBATCH_ADJOINT"
 	sed -i "s/^#SBATCH --time=.*/#SBATCH --time=$ADJOINT_TIME/" $SBATCH_ADJOINT
 	sed -i "s/^#SBATCH -p.*/#SBATCH -p $ADJOINT_PARTITION/" $SBATCH_ADJOINT
+	slurm_monitor.sh "$SBATCH_ADJOINT" "$events_list" $verbose
+	check_status $? "$SBATCH_ADJOINT"
     fi
     
      
