@@ -49,6 +49,13 @@ do
 	if [ -n "${events[$ievent]}" ]; then 
 	    ln -s ${events[$ievent]}  $RUN_DIR
 	    rm -fv $RUN_DIR/DATA/Par_file
+
+	    # Rename elastic kernels
+	    if [ $KERNELS_ATTENUATION -eq 1 ]
+	       then
+		   mv -v $RUN_DIR/OUTPUT_FILES/kernels.bp $RUN_DIR/OUTPUT_FILES/kernels.elastic.bp
+	    fi
+	    
 	if [ $ievent -eq $start_idx ];then
 	    rsync -av OUTPUT_FILES/*.txt $RUN_DIR/OUTPUT_FILES/
 	    rsync -av OUTPUT_FILES/*.h $RUN_DIR/OUTPUT_FILES/

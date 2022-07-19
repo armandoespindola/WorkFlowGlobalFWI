@@ -100,5 +100,11 @@ do
     create_sbatch $template
 done
 
+if [ $KERNELS_ATTENUATION -gt 0 ]
+then
+    cp -v adjoint/run_pyadj_mt.sbatch adjoint/run_pyadj_mt_q.sbatch
+    sed -i "/-r.*/d" adjoint/run_pyadj_mt_q.sbatch
+fi
+
 check_status 0 $(basename $0)
 exit 0

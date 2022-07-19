@@ -2,15 +2,16 @@
 
 trap " log_status 1 $0 "  ERR
 
-if [ $# -lt 2 ]; then
+if [ $# -lt 3 ]; then
     echo  "This program creates links to adjoint sources and adjoint stations"
-    echo  " usage: ./workflow_py_copy_adjoint.sh PAR_INV verbose[false=0/true=1] "
+    echo  " usage: ./workflow_py_copy_adjoint.sh PAR_INV Q_FLAG[false=0/true=1] verbose[false=0/true=1] "
     echo 
     exit 1
 fi
 
 PAR_INV=$1
-verbose=$2
+Q_FLAG=$2
+verbose=$3
 
 
 # Loading env variables
@@ -58,7 +59,18 @@ do
 	echo "File not found: ${WORKFLOW_DIR}/sum_adjoint/output/adjoint_sum.${ievent}.h5"
 	exit 1
     else
-	ln -sf ${WORKFLOW_DIR}/sum_adjoint/output/adjoint_sum.${ievent}.h5 adjoint.h5
+
+	if [ $KERNELS_ATTENUATION -eq 1 ]; then
+	    if [ $Q_FLAG -eq 0 ]; then
+		ln -sf ${WORKFLOW_DIR}/sum_adjoint/output/adjoint_sum.${ievent}.elastic.h5 adjoint.h5
+	    elif [ $Q_FLAG -eq 1 ]; then
+		ln -sf ${WORKFLOW_DIR}/sum_adjoint/output/adjoint_sum.${ievent}.h5 adjoint.h5
+	    fi
+	else
+	    ln -sf ${WORKFLOW_DIR}/sum_adjoint/output/adjoint_sum.${ievent}.h5 adjoint.h5
+	fi
+	
+	
     fi
     
     

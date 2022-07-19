@@ -47,7 +47,7 @@ function compute_misfit(){
     # cd ..
 
 
-    mpirun -np 1 python print_linesearch.py "."
+    python print_linesearch.py "."
     check_status $?
 
     cp fval line_search/

@@ -29,7 +29,7 @@ cp DATA/Par_file DATA/Par_file.org
 
 cd $WORK_DIR
 
-workflow_py_copy_adjoint.sh $PAR_INV $verbose
+workflow_py_copy_adjoint.sh $PAR_INV 0 $verbose
 check_status $?
 
 if [ $? -ne 0 ]; then echo " Mesh error "; exit 1; fi
@@ -44,6 +44,13 @@ if [ $? -ne 0 ]; then echo " Mesh error "; exit 1; fi
 cd $WORK_DIR
 workflow_py_multiple_runs.sh $PAR_INV "adjoint" $verbose
 check_status $?
+
+if [ $KERNELS_ATTENUATION -eq 1 ]
+then
+    workflow_py_copy_adjoint.sh $PAR_INV 1 1
+    workflow_py_multiple_runs.sh $PAR_INV "adjoint" $verbose
+    check_status $?
+fi
 
 
 cd $SIMULATION_DIR
