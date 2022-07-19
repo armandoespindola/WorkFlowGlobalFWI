@@ -17,7 +17,7 @@ verbose=$2
 
 cd $WORKFLOW_DIR
 if [ ! -e $RESULTS/fval ]; then
-    mpirun -np 1 python print_linesearch.py "."
+    python print_linesearch.py "."
     check_status $?
     cp -v  fval $RESULTS/
 fi
@@ -61,7 +61,9 @@ fi
 
 if [ "$OPT_METHOD" == "SD" ] || [ "$OPT_METHOD" == "NLCG" ]; then
     linesearch="bracket"
-    step_max=$(awk -v a="$gtg" 'BEGIN {b=0.15;print b/a}')
+    #step_max=$(awk -v a="$gtg" 'BEGIN {b=0.15;print b/a}')
+    max_val=$(grep -o max_val.* $SIMULATION_DIR/output/direction_1.o | cut -d : -f2)
+    step_max=$(awk -v a="$max_val" 'BEGIN {b=0.15;print b/a}')
 elif [ "$OPT_METHOD" == "LBFGS" ]; then
     linesearch="backtrack"
     max_val=$(grep -o max_val.* $SIMULATION_DIR/output/direction_1.o | cut -d : -f2)

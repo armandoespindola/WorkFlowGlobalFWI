@@ -2,7 +2,7 @@
 
 trap " check_status 1 $(basename $0)  " ERR
 
-if [ $# -lt 2 ]; then echo "usage: ./workflow_py_forward.sh PAR_INV SAVE_FORWARD[false==0/true==1] verbose[false==0/true==1]"; exit 1; fi
+if [ $# -lt 3 ]; then echo "usage: ./workflow_py_forward.sh PAR_INV SAVE_FORWARD[false==0/true==1] verbose[false==0/true==1]"; exit 1; fi
 
 PAR_INV=$1
 SAVE_FORWARD=$2
