@@ -25,6 +25,7 @@ verbose=$3
 . workflow_py_load_config.sh $PAR_INV $verbose
 check_status $?
 events_list=$(grep -v ^# "${WORKFLOW_DIR}/${EVENT_FILE}" | sed "s/[a-z]0*//g")
+events_name=$(grep -v ^# "${WORKFLOW_DIR}/${EVENT_FILE}")
 cd $WORKFLOW_DIR
 
 python generate_path_files.py folders
