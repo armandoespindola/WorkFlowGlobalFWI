@@ -61,6 +61,13 @@ cd $WORK_DIR
 create_event_file_specfem $KERNEL_SUM_INPUT $KERNEL_MASK_DIRS_FILE
 if [ $? -ne 0 ]; then echo " Error in event file specfem sum"; exit 1; fi
 
+if [ $KERNEL_ATTENUATION -eq 1 ]
+then
+    cp -v $KERNEL_SUM_INPUT ${KERNEL_SUM_INPUT/_elastic/_attenuation}
+    sed -i "s|kernels.bp|kernels.elastic.bp|g" $KERNEL_SUM_INPUT
+fi
+
+
 cd $SIMULATION_DIR
 
 # Create Sbatch File
@@ -70,12 +77,27 @@ sed -i "s/^#SBATCH --time=.*/#SBATCH --time=$KERNEL_TIME/" $SBATCH_KERNEL
 sed -i "s/^#SBATCH -p.*/#SBATCH -p $KERNEL_PARTITION/" $SBATCH_KERNEL
 
 # Kernel Sum
+if [ ! -e $KERNEL_SUM_BIN ]; then echo "$KERNEL_SUM_BIN not found"; exit 1; fi
+sed -i "s|:kernel_sum_bin:|$KERNEL_SUM_BIN|g" $SBATCH_KERNEL
 sed -i "s|:event_file:|$KERNEL_SUM_INPUT|g" $SBATCH_KERNEL
 sed -i "s|:output_file:|$KERNEL_SUM_OUTPUT|g" $SBATCH_KERNEL
 sed -i "s|:model_file:|${RESULTS}/model_gll_0.bp|g" $SBATCH_KERNEL
 
+if [ $KERNELS_ATTENUATION -eq 1 ]
+then
+    # line=$(grep $KERNEL_SUM_BIN $SBATCH_KERNEL)
+    # line_q= $(echo $line | sed "s|$KERNEL_SUM_INPUT|${KERNEL_SUM_INPUT/_elastic/_attenuation}|g")
+    # sed -i "s|$line|$line\n$line_q|g" $SBATCH_KERNEL
+    KERNEL_SUM_INPUT_Q=${KERNEL_SUM_INPUT/_elastic/_attenuation}
+    sed -i "s|:event_file_attenuation:|${KERNEL_SUM_INPUT_Q|g" $SBATCH_KERNEL
+else
+    sed -i "|:event_file_attenuation:|d" $SBATCH_KERNEL
+fi
+
 # Kernel Smoothing
 
+if [ ! -e $KERNEL_SMOOTH_BIN ]; then echo "$KERNEL_SMOOTH_BIN not found"; exit 1; fi
+sed -i "s|:kernel_smooth_bin:|$KERNEL_SMOOTH_BIN|g" $SBATCH_KERNEL
 sed -i "s/:SIGMA_H:/$SIGMA_H/g" $SBATCH_KERNEL
 sed -i "s/:SIGMA_V:/$SIGMA_V/g" $SBATCH_KERNEL
 sed -i "s/:KERNEL_NAME:/$KERNEL_NAME/g" $SBATCH_KERNEL
@@ -85,7 +107,8 @@ sed -i "s|:OUTPUT_FILE:|$KERNEL_OUTPUT_FILE|g" $SBATCH_KERNEL
 sed -i "s/:GPU_MODE:/$GPU_MODE/g" $SBATCH_KERNEL
 
 # Kernel Mask Source
-
+if [ ! -e $KERNEL_MASK_BIN ]; then echo "$KERNEL_MASK_BIN not found"; exit 1; fi
+sed -i "s|:kernel_mask_bin:|$KERNEL_MASK_BIN|g" $SBATCH_KERNEL
 sed -i "s|:KERNEL_FILE:|$KERNEL_MASK_INPUT|g" $SBATCH_KERNEL
 sed -i "s|:MASK_DIRS_FILE:|$KERNEL_MASK_DIRS_FILE|g" $SBATCH_KERNEL
 sed -i "s|:OUTPUT_FILE_MASK:|$KERNEL_MASK_OUTPUT|g" $SBATCH_KERNEL

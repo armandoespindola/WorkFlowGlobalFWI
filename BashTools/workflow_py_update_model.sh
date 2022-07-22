@@ -28,7 +28,7 @@ if [ ! -e $MODEL_FILE ]; then echo "MODEL_FILE not found";exit 1;fi
 
 cd $SIMULATION_DIR
 
-if [ ! -e $LS_EXECUTABLE ]; then echo "$LS_EXECUTABLE not found"; exit 1; fi
+if [ ! -e $LS_BIN ]; then echo "$LS_BIN not found"; exit 1; fi
 
 
 if [ ! -e "$SBATCH_LS.template" ] || [ -z $SBATCH_LS ]; then echo "SBATCH_LS not found";exit 1; fi
@@ -44,7 +44,7 @@ sed -i "s/^#SBATCH -p.*/#SBATCH -p $LS_PARTITION/" $SBATCH_LS
 SOLVER_FILE="$SIMULATION_DIR/DATABASES_MPI/solver_data.bp"
 PAR_LS="$step ${RESULTS}/model_gll_0.bp $SOLVER_FILE $RESULTS/$DIR_GRAD_OUTPUT $RESULTS/"
 
-sed -i "s|:executable:|$LS_EXECUTABLE|g" $SBATCH_LS
+sed -i "s|:executable:|$LS_BIN|g" $SBATCH_LS
 sed -i "s|:parameters:|$PAR_LS|g" $SBATCH_LS
 
 slurm_monitor.sh "$SBATCH_LS" 1 $verbose

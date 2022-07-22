@@ -11,6 +11,13 @@ verbose=$2
 # Loading env variables
 . workflow_py_load_config.sh  $PAR_INV $verbose
 
+if [ "$KERNELS_TYPE" == "ISO" ] || [ $KERNELS_ATTENUATION -eq 1 ] 
+then
+    sed -i "s/SAVE_TRANSVERSE_KL_ONLY.*/SAVE_TRANSVERSE_KL_ONLY         = .false./g" ${SIMULATION_DIR}/DATA/Par_file
+elif [ "$KERNELS_TYPE" == "TISO" ]
+     sed -i "s/SAVE_TRANSVERSE_KL_ONLY.*/SAVE_TRANSVERSE_KL_ONLY         = .true./g" ${SIMULATION_DIR}/DATA/Par_file
+fi
+     
 workflow_py_compile_binaries.sh $PAR_INV 1 2 1
 check_status $?
 

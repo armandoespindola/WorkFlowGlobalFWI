@@ -63,13 +63,15 @@ DS_GPU=""
 ##############################################
 
 # KERNEL_SUM
-KERNEL_SUM_INPUT="${RESULTS}/event_kernel_sum"
+KERNEL_SUM_INPUT="${RESULTS}/event_kernel_sum_elastic"
 KERNEL_SUM_OUTPUT="${RESULTS}/raw_grad.bp"
+KERNEL_SUM_BIN=./bin.kernel/xsum_kernels
 
 # KERNEL_MASK
 KERNEL_MASK_DIRS_FILE="${RESULTS}/mask_dirs_file"
 KERNEL_MASK_INPUT="${RESULTS}/raw_grad.bp"
 KERNEL_MASK_OUTPUT="${RESULTS}/raw_grad_masked.bp"
+KERNEL_MASK_BIN=./bin.kernel/xsrc_mask
 
 # KERNEL SMOOTHING
 KERNEL_SMOOTH_INPUT="$KERNEL_MASK_OUTPUT"
@@ -78,6 +80,7 @@ SIGMA_H="700.0"
 SIGMA_V="150.0"
 KERNEL_NAME="mu_kl_crust_mantle"
 GPU_MODE=".false."
+KERNEL_SMOOTH_BIN=./bin/xsmooth_sem_adios
 
 SBATCH_KERNEL=kernel_processing.sbatch
 KERNEL_TIME="01:00:00"
@@ -93,17 +96,17 @@ DIR_GRAD_OUTPUT=direction.bp
 # SD
 GRAD_FILE="${RESULTS}/gradient.bp"
 PRECOND_FILE="${RESULTS}/precond.bp"
-SD_EXECUTABLE=./bin.kernel/xsteepDescent
+SD_BIN=./bin.kernel/xsteepDescent
 
 # NLCG
 GRAD_FILE_OLD=${WORK_DIR}/IT1_f1/gradient.bp
 DIRECTION_FILE_OLD=${WORK_DIR}/IT1_f1/direction.bp
 GRAD_FILE_NEW="${RESULTS}/gradient.bp"
-NLCG_EXECUTABLE=./bin.kernel/xcg_direction
+NLCG_BIN=./bin.kernel/xcg_direction
 
 # LBFGS
 LBFGS_PATH_FILE=$RESULTS/lbfgs_input
-LBFGS_EXECUTABLE=./bin.kernel/xlbfgs
+LBFGS_BIN=./bin.kernel/xlbfgs
 
 SBATCH_OPT=compute_direction.sbatch
 OPT_TIME="01:00:00"
@@ -115,7 +118,7 @@ OPT_PARTITION="debug"
 
 # MODEL FILE
 MODEL_FILE=${RESULTS}/model_gll_0.bp
-LS_EXECUTABLE=./bin.kernel/xupdate_model_par
+LS_BIN=./bin.kernel/xupdate_model_par
 STEP_TRIALS=3
 OLD_ITER=0
 FVAL_OLD=""

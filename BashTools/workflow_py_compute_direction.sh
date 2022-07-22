@@ -41,7 +41,7 @@ then
 
     cd $SIMULATION_DIR
 
-    if [ ! -e $SD_EXECUTABLE ]; then echo "$SD_EXECUTABLE not found"; exit 1; fi
+    if [ ! -e $SD_BIN ]; then echo "$SD_BIN not found"; exit 1; fi
 
 
     #cp $SBATCH_OPT.template $SBATCH_OPT
@@ -52,7 +52,7 @@ then
 
     PAR_SD="$GRAD_FILE $PRECOND_FILE $SOLVER_FILE $DIR_GRAD_OUTPUT"
 
-    sed -i "s|:executable:|$SD_EXECUTABLE|g" $SBATCH_OPT
+    sed -i "s|:executable:|$SD_BIN|g" $SBATCH_OPT
     sed -i "s|:parameters:|$PAR_SD|g" $SBATCH_OPT
 
     slurm_monitor.sh "$SBATCH_OPT" 1 $verbose
@@ -81,7 +81,7 @@ then
 
     cd $SIMULATION_DIR
     
-    if [ ! -e $NLCG_EXECUTABLE ]; then echo "$NLCG_EXECUTABLE not found"; exit 1; fi
+    if [ ! -e $NLCG_BIN ]; then echo "$NLCG_BIN not found"; exit 1; fi
 
 
 
@@ -94,7 +94,7 @@ then
 
     PAR_NLCG="$GRAD_FILE_OLD $GRAD_FILE_NEW $DIRECTION_FILE_OLD $SOLVER_FILE $DIR_GRAD_OUTPUT"
 
-    sed -i "s|:executable:|$NLCG_EXECUTABLE|g" $SBATCH_OPT
+    sed -i "s|:executable:|$NLCG_BIN|g" $SBATCH_OPT
     sed -i "s|:parameters:|$PAR_NLCG|g" $SBATCH_OPT
 
     slurm_monitor.sh "$SBATCH_OPT" 1 $verbose
@@ -139,6 +139,8 @@ then
 
     cd $SIMULATION_DIR
     #cp $SBATCH_OPT.template $SBATCH_OPT
+    
+    if [ ! -e $LBFGS_BIN ]; then echo "$LBFGS_BIN not found"; exit 1; fi
 
     SOLVER_FILE="$SIMULATION_DIR/DATABASES_MPI/solver_data.bp"
 
@@ -146,7 +148,7 @@ then
 
     PAR_LBFGS="$LBFGS_PATH_FILE $SOLVER_FILE $DIR_GRAD_OUTPUT"
 
-    sed -i "s|:executable:|$LBFGS_EXECUTABLE|g" $SBATCH_OPT
+    sed -i "s|:executable:|$LBFGS_BIN|g" $SBATCH_OPT
     sed -i "s|:parameters:|$PAR_LBFGS|g" $SBATCH_OPT
 
     slurm_monitor.sh "$SBATCH_OPT" 1 $verbose
