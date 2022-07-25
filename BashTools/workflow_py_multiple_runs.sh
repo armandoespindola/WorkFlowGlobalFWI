@@ -38,7 +38,7 @@ do
 	break
     fi
 
-    echo "Running events from ${events[$start_idx]} to ${events[$end_idx]}"
+    #echo "Running events from ${events[$start_idx]} to ${events[$end_idx]}"
     id_job=1
     for ((ievent=$start_idx;ievent<=$end_idx;ievent++))
     do
@@ -50,11 +50,6 @@ do
 	    ln -s ${events[$ievent]}  $RUN_DIR
 	    rm -fv $RUN_DIR/DATA/Par_file
 
-	    # Rename elastic kernels
-	    if [ $KERNELS_ATTENUATION -eq 1 ]
-	       then
-		   mv -v $RUN_DIR/OUTPUT_FILES/kernels.bp $RUN_DIR/OUTPUT_FILES/kernels.elastic.bp
-	    fi
 	    
 	if [ $ievent -eq $start_idx ];then
 	    rsync -av OUTPUT_FILES/*.txt $RUN_DIR/OUTPUT_FILES/
@@ -77,7 +72,7 @@ do
 	((id_job++))
     done
 
-    echo "Running events from ${events[$start_idx]} to ${events[$end_idx]}"
+    
     events_list="1"
 
     if [ $simulation == "forward" ]; then
@@ -98,7 +93,8 @@ do
 	check_status $? "$SBATCH_ADJOINT"
     fi
     
-     
+    echo "Running events from ${events[$start_idx]} to ${events[$end_idx]}"
+    
 done
 
 sed -i "s/^NUMBER_OF_SIMULTANEOUS_RUNS.*/NUMBER_OF_SIMULTANEOUS_RUNS     = 1/g" $SIMULATION_DIR/DATA/Par_file

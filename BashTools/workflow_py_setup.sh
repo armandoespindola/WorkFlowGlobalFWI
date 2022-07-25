@@ -4,8 +4,8 @@ trap ' check_status 1 $(basename $0) ' ERR
 
 
 if [ $# -lt 2 ]; then
-    echo "This program sets up worflow-py"
-    echo "usage: ./workflow_py_clean.sh  PAR_INV verbose[false==0/true==1]"; exit 1;
+    echo "This program sets up worflow_py_setup.sh"
+    echo "usage: ./workflow_py_setup.sh  PAR_INV verbose[false==0/true==1]"; exit 1;
 fi
 
 PAR_INV=$1

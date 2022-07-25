@@ -26,6 +26,11 @@ then
 fi
 
 
+if [ ! -e $KERNEL_PARFILE ]; then
+    echo "KERNEL PARFILE: $KERNEL_PARFILE  not found. Please check!"
+    exit 1
+fi
+
 VARS=($(grep -v ^#  $PAR_INV))
 
 echo 

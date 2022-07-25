@@ -62,11 +62,14 @@ do
 
 	if [ $KERNELS_ATTENUATION -eq 1 ]; then
 	    if [ $Q_FLAG -eq 0 ]; then
+		echo -ne "\n|---> Elastic adjoint source <---|\n"
 		ln -sf ${WORKFLOW_DIR}/sum_adjoint/output/adjoint_sum.${ievent}.elastic.h5 adjoint.h5
 	    elif [ $Q_FLAG -eq 1 ]; then
+		echo -ne "\n|---> Anelastic adjoint source <---|\n"
 		ln -sf ${WORKFLOW_DIR}/sum_adjoint/output/adjoint_sum.${ievent}.h5 adjoint.h5
 	    fi
 	else
+	    echo -ne "\n|---> Adjoint source <---|\n"
 	    ln -sf ${WORKFLOW_DIR}/sum_adjoint/output/adjoint_sum.${ievent}.h5 adjoint.h5
 	fi
 	

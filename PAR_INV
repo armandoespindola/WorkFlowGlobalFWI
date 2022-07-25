@@ -61,6 +61,8 @@ DS_GPU=""
 ##############################################
 ############## KERNEL PROCESSING #############
 ##############################################
+# KERNEL PAR FILE
+KERNEL_PARFILE=${WORK_DIR}/KERNEL_PAR
 
 # KERNEL_SUM
 KERNEL_SUM_INPUT="${RESULTS}/event_kernel_sum_elastic"
@@ -78,7 +80,6 @@ KERNEL_SMOOTH_INPUT="$KERNEL_MASK_OUTPUT"
 KERNEL_OUTPUT_FILE="${RESULTS}/gradient.bp"
 SIGMA_H="700.0"
 SIGMA_V="150.0"
-KERNEL_NAME="mu_kl_crust_mantle"
 GPU_MODE=".false."
 KERNEL_SMOOTH_BIN=./bin/xsmooth_sem_adios
 

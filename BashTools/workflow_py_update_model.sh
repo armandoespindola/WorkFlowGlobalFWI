@@ -42,7 +42,7 @@ sed -i "s/^#SBATCH -p.*/#SBATCH -p $LS_PARTITION/" $SBATCH_LS
 
 #cp -v $MODEL_FILE ${RESULTS}/model_gll_0.bp
 SOLVER_FILE="$SIMULATION_DIR/DATABASES_MPI/solver_data.bp"
-PAR_LS="$step ${RESULTS}/model_gll_0.bp $SOLVER_FILE $RESULTS/$DIR_GRAD_OUTPUT $RESULTS/"
+PAR_LS="$KERNEL_PARFILE $step ${RESULTS}/model_gll_0.bp $SOLVER_FILE $RESULTS/$DIR_GRAD_OUTPUT $RESULTS/"
 
 sed -i "s|:executable:|$LS_BIN|g" $SBATCH_LS
 sed -i "s|:parameters:|$PAR_LS|g" $SBATCH_LS

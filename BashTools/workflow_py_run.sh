@@ -72,9 +72,13 @@ cd ..
 python generate_path_files.py adjoint
 cd adjoint
 
-if [ $KERNELS_ATTENUATION -eq 0 ]; then 
+if [ $KERNELS_ATTENUATION -eq 0 ] || [ $KERNELS_ATTENUATION -eq 1 ]; then
+
+    echo -ne "\n|---> Elastic adjoint source <---|\n"
     slurm_monitor.sh "run_pyadj_mt.sbatch" "$events_list" $verbose
 elif [ $KERNELS_ATTENUATION -eq 2 ]; then
+
+    echo -ne "\n|---> Anelastic adjoint source <---|\n"
     slurm_monitor.sh "run_pyadj_mt_q.sbatch" "$events_list" $verbose
 fi
 
@@ -114,26 +118,25 @@ then
     for ievent in $events_name
     do
 	file_id=$(find ./ -name "*$ievent*.h5" -exec basename {} \;)
-	mv -v ${file_id} ${file_id/.h5/elastic.h5}
+	mv -v ${file_id} ${file_id/.h5/.elastic.h5}
 	file_id=$(find ./ -name "*$ievent*.json" -exec basename {} \;)
 	mv -v ${file_id} ${file_id/.json/.elastic.json}
-	cd ../../
     done
+    cd ../../
+    echo -ne "\n|---> Anelastic adjoint source <---|\n"
+    python generate_path_files.py adjoint
+    cd adjoint
+    slurm_monitor.sh "run_pyadj_mt_q.sbatch" "$events_list" $verbose
+    check_status $? "run_pyadj.sbatch"
+    print_process "run_pyadj_mt: done"
+    cd ..
 
-
-python generate_path_files.py adjoint
-cd adjoint
-slurm_monitor.sh "run_pyadj_mt_q.sbatch" "$events_list" $verbose
-check_status $? "run_pyadj.sbatch"
-print_process "run_pyadj_mt: done"
-cd ..
-
-python generate_path_files.py sum
-cd sum_adjoint
-slurm_monitor.sh "sum_adjoint.sbatch" "$events_list" $verbose
-check_status $? "sum_adjoint.sbatch"
-print_process "sum_adjoint: done"
-cd ..
+    python generate_path_files.py sum
+    cd sum_adjoint
+    slurm_monitor.sh "sum_adjoint.sbatch" "$events_list" $verbose
+    check_status $? "sum_adjoint.sbatch"
+    print_process "sum_adjoint: done"
+    cd ..
     
 fi
 

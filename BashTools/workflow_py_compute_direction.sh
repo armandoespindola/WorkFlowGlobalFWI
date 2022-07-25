@@ -50,7 +50,7 @@ then
 
     if [ ! -e $SOLVER_FILE ];then echo "Solver file not found"; exit 1;fi
 
-    PAR_SD="$GRAD_FILE $PRECOND_FILE $SOLVER_FILE $DIR_GRAD_OUTPUT"
+    PAR_SD="$KERNEL_PARFILE $GRAD_FILE $PRECOND_FILE $SOLVER_FILE $DIR_GRAD_OUTPUT"
 
     sed -i "s|:executable:|$SD_BIN|g" $SBATCH_OPT
     sed -i "s|:parameters:|$PAR_SD|g" $SBATCH_OPT
@@ -92,7 +92,7 @@ then
 
     if [ ! -e $SOLVER_FILE ];then echo "Solver file not found"; exit 1;fi
 
-    PAR_NLCG="$GRAD_FILE_OLD $GRAD_FILE_NEW $DIRECTION_FILE_OLD $SOLVER_FILE $DIR_GRAD_OUTPUT"
+    PAR_NLCG="$KERNEL_PARFILE $GRAD_FILE_OLD $GRAD_FILE_NEW $DIRECTION_FILE_OLD $SOLVER_FILE $DIR_GRAD_OUTPUT"
 
     sed -i "s|:executable:|$NLCG_BIN|g" $SBATCH_OPT
     sed -i "s|:parameters:|$PAR_NLCG|g" $SBATCH_OPT
@@ -146,7 +146,7 @@ then
 
     if [ ! -e $SOLVER_FILE ];then echo "Solver file not found"; exit 1;fi
 
-    PAR_LBFGS="$LBFGS_PATH_FILE $SOLVER_FILE $DIR_GRAD_OUTPUT"
+    PAR_LBFGS="$KERNEL_PARFILE $LBFGS_PATH_FILE $SOLVER_FILE $DIR_GRAD_OUTPUT"
 
     sed -i "s|:executable:|$LBFGS_BIN|g" $SBATCH_OPT
     sed -i "s|:parameters:|$PAR_LBFGS|g" $SBATCH_OPT

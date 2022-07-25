@@ -15,7 +15,7 @@
 NPROC=
 ###################################################
 
-:mpibin: $NPROC :kernel_sum_bin: :event_file: :output_file: :model_file: :event_file_attenuation:
+:mpibin: $NPROC :kernel_sum_bin: :kernel_parfile: :event_file: :output_file: :model_file: :event_file_attenuation:
 
 if [ $? -ne 0 ]; then
 echo " Error in Kernel_Sum"
@@ -23,7 +23,7 @@ exit 1
 fi
 
 
-:mpibin: $NPROC :kernel_mask_bin: :KERNEL_FILE: :MASK_DIRS_FILE: :OUTPUT_FILE_MASK:
+:mpibin: $NPROC :kernel_mask_bin: :kernel_parfile: :KERNEL_FILE: :MASK_DIRS_FILE: :OUTPUT_FILE_MASK:
 
 if [ $? -ne 0 ]; then
 echo " Error in Kernel_Masking"

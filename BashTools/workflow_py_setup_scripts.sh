@@ -100,10 +100,11 @@ do
     create_sbatch $template
 done
 
-if [ $KERNELS_ATTENUATION -gt 0 ]
+if [ $KERNELS_ATTENUATION -eq 1 ]
 then
+    echo -ne "\n|---> Anelastic and elastic adjoint source <---|\n"
     cp -v adjoint/run_pyadj_mt.sbatch adjoint/run_pyadj_mt_q.sbatch
-    sed -i "/-r.*/d" adjoint/run_pyadj_mt_q.sbatch
+    sed -i "/-r.*/d" adjoint/run_pyadj_mt.sbatch
 fi
 
 check_status 0 $(basename $0)

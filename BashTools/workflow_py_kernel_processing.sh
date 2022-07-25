@@ -61,7 +61,7 @@ cd $WORK_DIR
 create_event_file_specfem $KERNEL_SUM_INPUT $KERNEL_MASK_DIRS_FILE
 if [ $? -ne 0 ]; then echo " Error in event file specfem sum"; exit 1; fi
 
-if [ $KERNEL_ATTENUATION -eq 1 ]
+if [ $KERNELS_ATTENUATION -eq 1 ]
 then
     cp -v $KERNEL_SUM_INPUT ${KERNEL_SUM_INPUT/_elastic/_attenuation}
     sed -i "s|kernels.bp|kernels.elastic.bp|g" $KERNEL_SUM_INPUT
@@ -76,6 +76,8 @@ edit_sbatch "$SBATCH_KERNEL" $SIMULATION_DIR/DATA/Par_file
 sed -i "s/^#SBATCH --time=.*/#SBATCH --time=$KERNEL_TIME/" $SBATCH_KERNEL
 sed -i "s/^#SBATCH -p.*/#SBATCH -p $KERNEL_PARTITION/" $SBATCH_KERNEL
 
+
+sed -i "s|:kernel_parfile:|$KERNEL_PARFILE|g" $SBATCH_KERNEL
 # Kernel Sum
 if [ ! -e $KERNEL_SUM_BIN ]; then echo "$KERNEL_SUM_BIN not found"; exit 1; fi
 sed -i "s|:kernel_sum_bin:|$KERNEL_SUM_BIN|g" $SBATCH_KERNEL
@@ -89,13 +91,14 @@ then
     # line_q= $(echo $line | sed "s|$KERNEL_SUM_INPUT|${KERNEL_SUM_INPUT/_elastic/_attenuation}|g")
     # sed -i "s|$line|$line\n$line_q|g" $SBATCH_KERNEL
     KERNEL_SUM_INPUT_Q=${KERNEL_SUM_INPUT/_elastic/_attenuation}
-    sed -i "s|:event_file_attenuation:|${KERNEL_SUM_INPUT_Q|g" $SBATCH_KERNEL
+    sed -i "s|:event_file_attenuation:|${KERNEL_SUM_INPUT_Q}|g" $SBATCH_KERNEL
 else
     sed -i "|:event_file_attenuation:|d" $SBATCH_KERNEL
 fi
 
 # Kernel Smoothing
 
+KERNEL_NAME=$(echo $(grep -o .*kl.* $KERNEL_PARFILE ) | sed "s/ /,/g")
 if [ ! -e $KERNEL_SMOOTH_BIN ]; then echo "$KERNEL_SMOOTH_BIN not found"; exit 1; fi
 sed -i "s|:kernel_smooth_bin:|$KERNEL_SMOOTH_BIN|g" $SBATCH_KERNEL
 sed -i "s/:SIGMA_H:/$SIGMA_H/g" $SBATCH_KERNEL
