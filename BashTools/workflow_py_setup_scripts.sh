@@ -13,8 +13,8 @@ function create_sbatch(){
 
     ###### FRONTERA
     line=$(grep \\-\\-output ${target}.sbatch)
-    sed -i "s/$line/${line}\nexport UCX_TLS=\"knem,dc_x\"/g" ${target}.sbatch
-    sed -i "s/mpirun.*-np/ibrun -n/g" ${target}.sbatch
+    sed -i "s/$line/${line}\n$SBATCH_OPTIONAL/g" ${target}.sbatch
+    sed -i "s/mpirun.*-np/$MPIEXEC/g" ${target}.sbatch
     ######
     
     sed -i "s/\%a/:job_id:/g" ${target}.sbatch
