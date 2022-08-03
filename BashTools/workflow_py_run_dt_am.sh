@@ -70,8 +70,9 @@ check_status $? "filter_windows.sbatch"
 print_process "filter_windows: done"
 cd ..
 
-python generate_path_files.py adjoint_dt
-python generate_path_files.py adjoint_am
+# python generate_path_files.py adjoint_dt
+# python generate_path_files.py adjoint_am
+python generate_path_files.py adjoint_all
 cd adjoint
 
 if [ $KERNELS_ATTENUATION -eq 0 ] || [ $KERNELS_ATTENUATION -eq 1 ]; then
@@ -86,8 +87,9 @@ check_status $? "run_pyadj_mt_am.sbatch"
 print_process "run_pyadj_mt: done"
 cd ..
 
-python generate_path_files.py weight_dt_and_am_params
-python generate_path_files.py weight_dt_and_am_paths
+# python generate_path_files.py weight_dt_and_am_params
+# python generate_path_files.py weight_dt_and_am_paths
+python generate_path_files.py weight_all
 cd weights
 slurm_monitor.sh "calc_weights_dt_am.sbatch" "$events_list" $verbose
 check_status $? "calc_weights_dt_am.sbatch"
