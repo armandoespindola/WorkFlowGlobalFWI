@@ -47,7 +47,8 @@ function compute_misfit(){
     # cd ..
 
 
-    python print_linesearch.py "."
+    #python print_linesearch.py "."
+    python generate_path_files.py $LS_MISFIT
     check_status $?
 
     cp fval line_search/

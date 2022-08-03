@@ -17,7 +17,8 @@ verbose=$2
 
 cd $WORKFLOW_DIR
 if [ ! -e $RESULTS/fval ]; then
-    python print_linesearch.py "."
+    #python print_linesearch.py "."
+    python generate_path_files.py $LS_MISFIT
     check_status $?
     cp -v  fval $RESULTS/
 fi

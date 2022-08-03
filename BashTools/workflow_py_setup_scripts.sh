@@ -91,9 +91,12 @@ templates=("converter/convert_to_asdf.sh.template"
            "measure/run_measureadj.sh.template"
            "stations/extract_stations.sh.template"
            "filter/filter_windows.sh.template"
-           "adjoint/run_pyadj_mt.sh.template"
+	   "adjoint/run_pyadj_mt.sh.template"
+	   "adjoint/run_pyadj_mt_dt_am.sh.template"
            "weights/calc_weights.sh.template"
+	   "weights/calc_weights_dt_am.sh.template"
            "sum_adjoint/sum_adjoint.sh.template")
+
 
 for template in "${templates[@]}"
 do
@@ -104,7 +107,9 @@ if [ $KERNELS_ATTENUATION -gt 0 ]
 then
     echo -ne "\n|---> Anelastic and elastic adjoint source <---|\n"
     cp -v adjoint/run_pyadj_mt.sbatch adjoint/run_pyadj_mt_q.sbatch
+    cp -v adjoint/run_pyadj_mt_dt_am.sbatch adjoint/run_pyadj_mt_dt_am_q.sbatch
     sed -i "/-r.*/d" adjoint/run_pyadj_mt.sbatch
+    sed -i "/-r.*/d" adjoint/run_pyadj_mt_dt_am.sbatch
 fi
 
 check_status 0 $(basename $0)
