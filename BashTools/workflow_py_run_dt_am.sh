@@ -14,7 +14,7 @@ function print_process(){
 
 if [ $# -lt 3 ]; then
     echo "This program runs workflow-py to compute adjoint source"
-    echo "usage: ./workflow_py_run.sh PAR_INV WIN[false==0/true==1] verbose[false==0/true==1]"; exit 1;
+    echo "usage: ./workflow_py_run_dt_am.sh PAR_INV WIN[false==0/true==1] verbose[false==0/true==1]"; exit 1;
 fi
 
 PAR_INV=$1
