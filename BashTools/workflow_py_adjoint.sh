@@ -32,10 +32,16 @@ fi
 workflow_py_compile_binaries.sh $PAR_INV 1 2 1
 check_status $?
 
-events_list=$(grep -v ^# "${WORKFLOW_DIR}/${EVENT_FILE}" | sed "s/[a-z]0*//g")
-events=$(echo $events_list | sed "s/ /,/g")
+events_list=$(grep -v ^# "${WORKFLOW_DIR}/${EVENT_FILE}")
+events=$(echo $events_list | sed "s/[a-z]0*//g" | sed "s/ /,/g")
 
 cd $SIMULATION_DIR
+
+# Check if events folders exist
+for ievent in $events_list
+do
+    if [ ! -d $ievent ]; then echo "Event folder -> $ievent not found"; exit 1;fi
+done
 
 copy_mesh2events.sh "${WORKFLOW_DIR}/${EVENT_FILE}"  $verbose
 check_status $?

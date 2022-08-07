@@ -22,10 +22,16 @@ cd $WORK_DIR
 workflow_py_mesher.sh $PAR_INV $verbose
 check_status $?
 
-events_list=$(grep -v ^# "${WORKFLOW_DIR}/${EVENT_FILE}" | sed "s/[a-z]0*//g")
-events=$(echo $events_list | sed "s/ /,/g")
+events_list=$(grep -v ^# "${WORKFLOW_DIR}/${EVENT_FILE}")
+events=$(echo $events_list | sed "s/[a-z]0*//g"  | sed "s/ /,/g")
 
 cd $SIMULATION_DIR
+
+# Check if events folders exist
+for ievent in $events_list
+do
+    if [ ! -d $ievent ]; then echo "Event folder -> $ievent not found"; exit 1;fi
+done
 
 if [ $SAVE_FORWARD -eq 1 ]; then 
     cp DATA/Par_file DATA/Par_file.org

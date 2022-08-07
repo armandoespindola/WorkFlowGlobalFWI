@@ -4,13 +4,12 @@ trap " check_status 1 $(basename $0) "  ERR SIGINT
 
 function print_process(){
     string_title=$1
-
+    clear
     echo "######################"
     echo "######################"
     echo $string_title
     echo "######################"
     echo "######################"
-    clear
 }
 
 if [ $# -lt 3 ]; then
