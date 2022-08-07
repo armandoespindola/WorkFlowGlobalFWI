@@ -93,7 +93,7 @@ then
     KERNEL_SUM_INPUT_Q=${KERNEL_SUM_INPUT/_elastic/_attenuation}
     sed -i "s|:event_file_attenuation:|${KERNEL_SUM_INPUT_Q}|g" $SBATCH_KERNEL
 else
-    sed -i "|:event_file_attenuation:|d" $SBATCH_KERNEL
+    sed -i "s|:event_file_attenuation:||g" $SBATCH_KERNEL
 fi
 
 # Kernel Smoothing
