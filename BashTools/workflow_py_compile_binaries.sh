@@ -50,11 +50,15 @@ echo
 echo "COMPILING..."
 echo
 
+status=1
+while  [ $status -ne 0 ]
+do
+    ./mk_marconi100.sh $BINARIES
+    status=$?
+done
 
-./mk_marconi100.sh $BINARIES
+if [ $status -ne 0 ]; then echo "COMPILATION FAILED, PLEASE CHECK..."; exit 1; fi
 
-if [ $? -ne 0 ]; then echo ""; exit 1; fi
-if [ ! -e $BINARIES_DIR/xspecfem3D ]; then echo "COMPILATION FAILED, PLEASE CHECK..."; exit 1; fi
 
 # Copy bin files to 
 cd $FULL_DIR

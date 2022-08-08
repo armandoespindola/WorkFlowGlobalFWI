@@ -13,7 +13,7 @@ verbose=$2
 
 KERNELS_TYPE=$(sed -n 1p $KERNEL_PARFILE)
 
-if [ "$KERNELS_TYPE" == "ISO" ] 
+if [ "$KERNELS_TYPE" == "ISO" ] || [ $KERNELS_ATTENUATION -eq 1 ]
 then
     sed -i "s/SAVE_TRANSVERSE_KL_ONLY.*/SAVE_TRANSVERSE_KL_ONLY         = .false./g" ${SIMULATION_DIR}/DATA/Par_file
     sed -i "s/ANISOTROPIC_KL.* /ANISOTROPIC_KL                  = .false./g" ${SIMULATION_DIR}/DATA/Par_file
