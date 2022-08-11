@@ -69,7 +69,6 @@ function submit_jobs_failed()
 	k=$(($k + 1))
     done
     
-    sleep 5
     
     }
 
@@ -139,7 +138,6 @@ do
     cp $_sbatch_file ${_sbatch_file}.${i}
     sed -i "s/:job_id:/${i}/g" ${_sbatch_file}.${i}
     output_sbatch=$(echo $(sbatch ${sbatch_file}.${i}) | grep -o Submitted.*)
-    sleep 5
     echo $output_sbatch
     get_job_id "$output_sbatch"
     job_all[$i]="${job_id}_$i"

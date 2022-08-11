@@ -10,14 +10,14 @@ function create_event_file_specfem(){
     events=($(grep -v ^# $event_file))
 
     echo $nevent > $1
-    echo $nevent > $2
+    #echo $nevent > $2
     for ievent in ${events[@]}
     do
         local name_file="kernels.bp"
         local path="$SIMULATION_DIR/${ievent}/OUTPUT_FILES"
         echo "1.0" >> $1
         echo ${path}/$name_file >> $1
-        echo "$SIMULATION_DIR/${ievent}/DATABASES_MPI" >> $2
+        #echo "$SIMULATION_DIR/${ievent}/DATABASES_MPI" >> $2
 
 	if [ ! -e "${path}/$name_file" ]; then
 	    echo "File not found: ${path}/$name_file"
@@ -58,7 +58,7 @@ fi
 
 # Create Event File
 cd $WORK_DIR
-create_event_file_specfem $KERNEL_SUM_INPUT $KERNEL_MASK_DIRS_FILE
+create_event_file_specfem $KERNEL_SUM_INPUT #$KERNEL_MASK_DIRS_FILE
 if [ $? -ne 0 ]; then echo " Error in event file specfem sum"; exit 1; fi
 
 if [ $KERNELS_ATTENUATION -eq 1 ]
@@ -99,23 +99,24 @@ fi
 # Kernel Smoothing
 
 KERNEL_NAME=$(echo $(grep -o .*kl.* $KERNEL_PARFILE ) | sed "s/ /,/g")
+HESS_NAME=$(echo $KERNEL_NAME | sed "s/^/,/g" | sed "s/,/,hess_/g")
+
 if [ ! -e $KERNEL_SMOOTH_BIN ]; then echo "$KERNEL_SMOOTH_BIN not found"; exit 1; fi
 sed -i "s|:kernel_smooth_bin:|$KERNEL_SMOOTH_BIN|g" $SBATCH_KERNEL
 sed -i "s/:SIGMA_H:/$SIGMA_H/g" $SBATCH_KERNEL
 sed -i "s/:SIGMA_V:/$SIGMA_V/g" $SBATCH_KERNEL
-sed -i "s/:KERNEL_NAME:/$KERNEL_NAME/g" $SBATCH_KERNEL
+sed -i "s/:KERNEL_NAME:/$KERNEL_NAME$HESS_NAME/g" $SBATCH_KERNEL
 sed -i "s|:INPUT_FILE:|$KERNEL_SMOOTH_INPUT|g" $SBATCH_KERNEL
 sed -i "s|:SOLVER_FILE:|$SOLVER_FILE|g" $SBATCH_KERNEL
 sed -i "s|:OUTPUT_FILE:|$KERNEL_OUTPUT_FILE|g" $SBATCH_KERNEL
 sed -i "s/:GPU_MODE:/$GPU_MODE/g" $SBATCH_KERNEL
 
-# Kernel Mask Source
-if [ ! -e $KERNEL_MASK_BIN ]; then echo "$KERNEL_MASK_BIN not found"; exit 1; fi
-sed -i "s|:kernel_mask_bin:|$KERNEL_MASK_BIN|g" $SBATCH_KERNEL
-sed -i "s|:KERNEL_FILE:|$KERNEL_MASK_INPUT|g" $SBATCH_KERNEL
-sed -i "s|:MASK_DIRS_FILE:|$KERNEL_MASK_DIRS_FILE|g" $SBATCH_KERNEL
-sed -i "s|:OUTPUT_FILE_MASK:|$KERNEL_MASK_OUTPUT|g" $SBATCH_KERNEL
-
+# Prepare Inverse Hessian
+if [ ! -e $KERNEL_INVHESS_BIN ]; then echo "$KERNEL_INVHESS_BIN not found"; exit 1; fi
+sed -i "s|:kernel_invhess_bin:|$KERNEL_INVHESS_BIN|g" $SBATCH_KERNEL
+sed -i "s|:KERNEL_FILE:|$KERNEL_INVHESS_INPUT|g" $SBATCH_KERNEL
+sed -i "s|:OUTPUT_FILE_HESS:|$KERNEL_INVHESS_OUTPUT|g" $SBATCH_KERNEL
+sed -i "s|:INVHESS_THRESHOLD:|$KERNEL_INVHESS_THRESHOLD|g" $SBATCH_KERNEL
 
 
 slurm_monitor.sh "$SBATCH_KERNEL" 1 $verbose

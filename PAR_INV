@@ -69,14 +69,14 @@ KERNEL_SUM_INPUT="${RESULTS}/event_kernel_sum_elastic"
 KERNEL_SUM_OUTPUT="${RESULTS}/raw_grad.bp"
 KERNEL_SUM_BIN=./bin.kernel/xsum_kernels
 
-# KERNEL_MASK
-KERNEL_MASK_DIRS_FILE="${RESULTS}/mask_dirs_file"
-KERNEL_MASK_INPUT="${RESULTS}/raw_grad.bp"
-KERNEL_MASK_OUTPUT="${RESULTS}/raw_grad_masked.bp"
-KERNEL_MASK_BIN=./bin.kernel/xsrc_mask
+# KERNEL INVERSE HESSIAN
+KERNEL_INVHESS_THRESHOLD=0.20
+KERNEL_INVHESS_INPUT="${RESULTS}/gradient.bp"
+KERNEL_INVHESS_OUTPUT="${RESULTS}/invhess.bp"
+KERNEL_INVHESS_BIN=./bin.kernel/xinv_hess
 
 # KERNEL SMOOTHING
-KERNEL_SMOOTH_INPUT="$KERNEL_MASK_OUTPUT"
+KERNEL_SMOOTH_INPUT="$KERNEL_SUM_OUTPUT"
 KERNEL_OUTPUT_FILE="${RESULTS}/gradient.bp"
 SIGMA_H="700.0"
 SIGMA_V="150.0"
@@ -96,7 +96,7 @@ DIR_GRAD_OUTPUT=direction.bp
 
 # SD
 GRAD_FILE="${RESULTS}/gradient.bp"
-PRECOND_FILE="${RESULTS}/precond.bp"
+PRECOND_FILE="${RESULTS}/invhess.bp"
 SD_BIN=./bin.kernel/xsteepDescent
 
 # NLCG

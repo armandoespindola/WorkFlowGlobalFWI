@@ -8,7 +8,7 @@ function fstatus()
 
     if [ "$_status" == "COMPLETED" ]; then
 	echo "1"
-    elif [ "$_status" == "FAILED" ] || [ "$_status" == "CANCELLED" ] || [ "$_status" == "PREEMPTED" ]; then
+    elif [ "$_status" == "FAILED+" ] || [ "$_status" == "CANCELLED" ] || [ "$_status" == "PREEMPTED" ]; then
 	echo "-1"
     elif  [ "$_status" == "CANCELLED+" ]; then
 	echo "-1"

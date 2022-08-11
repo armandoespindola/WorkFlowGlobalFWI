@@ -13,15 +13,15 @@ verbose=$2
 
 KERNELS_TYPE=$(sed -n 1p $KERNEL_PARFILE)
 
-if [ "$KERNELS_TYPE" == "ISO" ] || [ $KERNELS_ATTENUATION -eq 1 ]
+if [ "$KERNELS_TYPE" == "ISO" ] || [ $KERNELS_ATTENUATION -eq 2 ]
 then
-    sed -i "s/SAVE_TRANSVERSE_KL_ONLY.*/SAVE_TRANSVERSE_KL_ONLY         = .false./g" ${SIMULATION_DIR}/DATA/Par_file
-    sed -i "s/ANISOTROPIC_KL.* /ANISOTROPIC_KL                  = .false./g" ${SIMULATION_DIR}/DATA/Par_file
+    sed -i "s/^SAVE_TRANSVERSE_KL_ONLY.*/SAVE_TRANSVERSE_KL_ONLY         = .false./g" ${SIMULATION_DIR}/DATA/Par_file
+    sed -i "s/^ANISOTROPIC_KL.* /ANISOTROPIC_KL                  = .false./g" ${SIMULATION_DIR}/DATA/Par_file
 elif [ "$KERNELS_TYPE" == "TISO" ]
 then
     echo -ne "\n|---> TISO Model Parameters <---|\n"
-    sed -i "s/SAVE_TRANSVERSE_KL_ONLY.*/SAVE_TRANSVERSE_KL_ONLY         = .true./g" ${SIMULATION_DIR}/DATA/Par_file
-    sed -i "s/ANISOTROPIC_KL.* /ANISOTROPIC_KL                  = .true./g" ${SIMULATION_DIR}/DATA/Par_file
+    sed -i "s/^SAVE_TRANSVERSE_KL_ONLY.*/SAVE_TRANSVERSE_KL_ONLY         = .true./g" ${SIMULATION_DIR}/DATA/Par_file
+    sed -i "s/^ANISOTROPIC_KL.* /ANISOTROPIC_KL                  = .true./g" ${SIMULATION_DIR}/DATA/Par_file
 else
     echo -ne "Model parameters option not found \"$KERNELS_TYPE\". Possible options: ISO,TISO\n"
     echo -ne "Please check file $WORK_DIR/${KERNEL_PARFILE}\n"
