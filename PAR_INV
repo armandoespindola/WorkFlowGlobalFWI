@@ -108,6 +108,7 @@ NLCG_BIN=./bin.kernel/xcg_direction
 # LBFGS
 LBFGS_PATH_FILE=$RESULTS/lbfgs_input
 LBFGS_BIN=./bin.kernel/xlbfgs
+LBFGS_H0_FILE="${RESULTS}/invhess.bp"
 
 SBATCH_OPT=compute_direction.sbatch
 OPT_TIME="01:00:00"

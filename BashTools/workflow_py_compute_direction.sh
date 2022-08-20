@@ -146,7 +146,9 @@ then
 
     if [ ! -e $SOLVER_FILE ];then echo "Solver file not found"; exit 1;fi
 
-    PAR_LBFGS="$KERNEL_PARFILE $LBFGS_PATH_FILE $SOLVER_FILE $DIR_GRAD_OUTPUT"
+    if [ ! -e $LBFGS_H0_FILE ]; then echo "$LBFGS_H0_FILE not found"; exit 1; fi
+
+    PAR_LBFGS="$KERNEL_PARFILE $LBFGS_PATH_FILE $SOLVER_FILE $DIR_GRAD_OUTPUT $LBFGS_H0_FILE"
 
     sed -i "s|:executable:|$LBFGS_BIN|g" $SBATCH_OPT
     sed -i "s|:parameters:|$PAR_LBFGS|g" $SBATCH_OPT
