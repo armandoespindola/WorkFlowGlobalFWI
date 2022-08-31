@@ -50,7 +50,7 @@ then
 
     if [ ! -e $SOLVER_FILE ];then echo "Solver file not found"; exit 1;fi
 
-    PAR_SD="$KERNEL_PARFILE $GRAD_FILE $PRECOND_FILE $SOLVER_FILE $DIR_GRAD_OUTPUT"
+    PAR_SD="$KERNEL_PARFILE $GRAD_FILE $SOLVER_FILE $DIR_GRAD_OUTPUT $PRECOND_FILE"
 
     sed -i "s|:executable:|$SD_BIN|g" $SBATCH_OPT
     sed -i "s|:parameters:|$PAR_SD|g" $SBATCH_OPT

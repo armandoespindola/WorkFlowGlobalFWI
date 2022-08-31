@@ -109,8 +109,11 @@ then
     cd output
     for ievent in $events_name
     do
-	file_id=$(find ./ -name "*$ievent*" -exec basename {} \;)
-	mv -v ${file_id} ${file_id/.h5/.elastic.h5}
+	file_ids=($(find ./ -name "*$ievent*" -exec basename {} \;))
+	for file_id in ${file_ids[@]}
+	do
+	    mv -v ${file_id} ${file_id/.h5/.elastic.h5}
+	done
     done
     cd ../../
 
