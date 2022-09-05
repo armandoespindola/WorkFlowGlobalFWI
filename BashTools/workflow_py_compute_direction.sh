@@ -78,7 +78,8 @@ then
 
     if [ ! -e $GRAD_FILE_OLD ]; then echo "PAR_INV: GRAD_FILE_OLD not found"; exit 1; fi
     if [ ! -e $DIRECTION_FILE_OLD ]; then echo "PAR_INV: DIRECTION_FILE_OLD is not found"; exit 1; fi
-
+    if [ ! -e $PRECOND_FILE_NLCG ]; then echo "PAR_INV: PRECOND_FILE_NLCG is not found"; exit 1; fi
+    
     cd $SIMULATION_DIR
     
     if [ ! -e $NLCG_BIN ]; then echo "$NLCG_BIN not found"; exit 1; fi
@@ -92,7 +93,8 @@ then
 
     if [ ! -e $SOLVER_FILE ];then echo "Solver file not found"; exit 1;fi
 
-    PAR_NLCG="$KERNEL_PARFILE $GRAD_FILE_OLD $GRAD_FILE_NEW $DIRECTION_FILE_OLD $SOLVER_FILE $DIR_GRAD_OUTPUT"
+       PAR_NLCG="$KERNEL_PARFILE $GRAD_FILE_OLD $GRAD_FILE_NEW $DIRECTION_FILE_OLD $SOLVER_FILE $DIR_GRAD_OUTPUT"
+       PAR_NLCG="$PAR_NLCG $PRECOND_FILE_NLCG"
 
     sed -i "s|:executable:|$NLCG_BIN|g" $SBATCH_OPT
     sed -i "s|:parameters:|$PAR_NLCG|g" $SBATCH_OPT

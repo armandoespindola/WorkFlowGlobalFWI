@@ -104,6 +104,7 @@ GRAD_FILE_OLD=${WORK_DIR}/IT1_f1/gradient.bp
 DIRECTION_FILE_OLD=${WORK_DIR}/IT1_f1/direction.bp
 GRAD_FILE_NEW="${RESULTS}/gradient.bp"
 NLCG_BIN=./bin.kernel/xcg_direction
+PRECOND_FILE_NLCG="${RESULTS}/invhess.bp"
 
 # LBFGS
 LBFGS_PATH_FILE=$RESULTS/lbfgs_input
