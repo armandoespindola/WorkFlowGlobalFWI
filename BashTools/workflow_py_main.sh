@@ -60,7 +60,7 @@ check_status $?
 # Runs WorkFlow
 cd $WORK_DIR
 WIN=1
-workflow_py_run.sh $PAR_INV $WIN $verbose
+workflow_py_run_general.sh $PAR_INV $WIN $verbose
 check_status $?
 
 

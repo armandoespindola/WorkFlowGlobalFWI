@@ -14,7 +14,7 @@ function print_process(){
 
 if [ $# -lt 3 ]; then
     echo "This program runs workflow-py to compute adjoint source"
-    echo "usage: ./workflow_py_run_dt_am.sh PAR_INV WIN[false==0/true==1] verbose[false==0/true==1]"; exit 1;
+    echo "usage: ./workflow_py_run_general.sh PAR_INV WIN[false==0/true==1] verbose[false==0/true==1]"; exit 1;
 fi
 
 PAR_INV=$1
@@ -26,6 +26,12 @@ verbose=$3
 check_status $?
 events_list=$(grep -v ^# "${WORKFLOW_DIR}/${EVENT_FILE}" | sed "s/[a-z]0*//g")
 events_name=$(grep -v ^# "${WORKFLOW_DIR}/${EVENT_FILE}")
+misfit=$(grep ^misfit ${WORKFLOW_DIR}/settings.yml | cut -d: -f2 | xargs)
+misfit_prefix=${misfit/'misfit_'/}
+echo "#########"
+echo "misfit: "$misfit
+echo "#########"
+
 cd $WORKFLOW_DIR
 
 python generate_path_files.py folders
@@ -48,11 +54,11 @@ then
 fi
 
 
-python generate_path_files.py measure
+python generate_path_files.py measure_all
 cd measure
-slurm_monitor.sh "run_measureadj.sbatch" "$events_list" $verbose
-check_status $? "run_measureadj.sbatch"
-print_process "run_measureadj: done"
+slurm_monitor.sh "run_measureadj_${misfit_prefix}.sbatch" "$events_list" $verbose
+check_status $? "run_measureadj_${misfit_prefix}.sbatch"
+print_process "run_measureadj_${misfit_prefix}: done"
 cd ..
 
 python generate_path_files.py stations
@@ -69,33 +75,29 @@ check_status $? "filter_windows.sbatch"
 print_process "filter_windows: done"
 cd ..
 
-# python generate_path_files.py adjoint_dt
-# python generate_path_files.py adjoint_am
 python generate_path_files.py adjoint_all
 cd adjoint
 
 if [ $KERNELS_ATTENUATION -eq 0 ] || [ $KERNELS_ATTENUATION -eq 1 ]; then
     echo -ne "\n|---> Elastic adjoint source <---|\n"
-    slurm_monitor.sh "run_pyadj_mt_dt_am.sbatch" "$events_list" $verbose
+    slurm_monitor.sh "run_pyadj_${misfit_prefix}.sbatch" "$events_list" $verbose
 elif [ $KERNELS_ATTENUATION -eq 2 ]; then
     echo -ne "\n|---> Anelastic adjoint source <---|\n"
-    slurm_monitor.sh "run_pyadj_mt_dt_am_q.sbatch" "$events_list" $verbose
+    slurm_monitor.sh "run_pyadj_${misfit_prefix}_q.sbatch" "$events_list" $verbose
 fi
 
-check_status $? "run_pyadj_mt_am.sbatch"
-print_process "run_pyadj_mt: done"
+check_status $? "run_pyadj_${misfit_prefix}.sbatch"
+print_process "run_pyadj_${misfit_prefix}: done"
 cd ..
 
-# python generate_path_files.py weight_dt_and_am_params
-# python generate_path_files.py weight_dt_and_am_paths
 python generate_path_files.py weight_all
 cd weights
-slurm_monitor.sh "calc_weights_dt_am.sbatch" "$events_list" $verbose
-check_status $? "calc_weights_dt_am.sbatch"
-print_process "calc_weights_dt_am: done"
+slurm_monitor.sh "calc_weights_${misfit_prefix}.sbatch" "$events_list" $verbose
+check_status $? "calc_weights_${misfit_prefix}.sbatch"
+print_process "calc_weights_${misfit_prefix}: done"
 cd ..
 
-python generate_path_files.py sum_dt_am
+python generate_path_files.py sum_all
 cd sum_adjoint
 slurm_monitor.sh "sum_adjoint.sbatch" "$events_list" $verbose
 check_status $? "sum_adjoint.sbatch"
@@ -128,15 +130,14 @@ then
     done
     cd ../../
     echo -ne "\n|---> Anelastic adjoint source <---|\n"
-    python generate_path_files.py adjoint_dt
-    python generate_path_files.py adjoint_am
+    python generate_path_files.py adjoint_all
     cd adjoint
-    slurm_monitor.sh "run_pyadj_mt_dt_am_q.sbatch" "$events_list" $verbose
-    check_status $? "run_pyadj_mt_dt_am_q.sbatch"
-    print_process "run_pyadj_mt: done"
+    slurm_monitor.sh "run_pyadj_${misfit_prefix}_q.sbatch" "$events_list" $verbose
+    check_status $? "run_pyadj_${misfit_prefix}_q.sbatch"
+    print_process "run_pyadj_${misfit_prefix}_q: done"
     cd ..
 
-    python generate_path_files.py sum_dt_am
+    python generate_path_files.py sum_all
     cd sum_adjoint
     slurm_monitor.sh "sum_adjoint.sbatch" "$events_list" $verbose
     check_status $? "sum_adjoint.sbatch"

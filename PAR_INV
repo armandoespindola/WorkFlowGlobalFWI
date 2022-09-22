@@ -131,4 +131,3 @@ GTP_OLD=""
 SBATCH_LS=update_model.sbatch
 LS_TIME="01:00:00"
 LS_PARTITION="debug"
-LS_MISFIT="misfit"

@@ -83,18 +83,22 @@ if [ $verbose -eq 1 ]; then
     echo "Narray: " $DS_NARRAY
 fi
 
+misfit=$(grep ^misfit ${WORKFLOW_DIR}/settings.yml | cut -d: -f2 | xargs)
+misfit_prefix=${misfit/'misfit_'/}
+echo "#########"
+echo "misfit: "$misfit
+echo "#########"
+
 cd $WORKFLOW_DIR
 
 templates=("converter/convert_to_asdf.sh.template"
            "proc/run_preprocessing.sh.template"
            "windows/select_windows.sh.template"
-           "measure/run_measureadj.sh.template"
+           "measure/run_measureadj_${misfit_prefix}.sh.template"
            "stations/extract_stations.sh.template"
            "filter/filter_windows.sh.template"
-	   "adjoint/run_pyadj_mt.sh.template"
-	   "adjoint/run_pyadj_mt_dt_am.sh.template"
-           "weights/calc_weights.sh.template"
-	   "weights/calc_weights_dt_am.sh.template"
+	   "adjoint/run_pyadj_${misfit_prefix}.sh.template"
+           "weights/calc_weights_${misfit_prefix}.sh.template"
            "sum_adjoint/sum_adjoint.sh.template")
 
 
@@ -106,10 +110,13 @@ done
 if [ $KERNELS_ATTENUATION -gt 0 ]
 then
     echo -ne "\n|---> Anelastic and elastic adjoint source <---|\n"
-    cp -v adjoint/run_pyadj_mt.sbatch adjoint/run_pyadj_mt_q.sbatch
-    cp -v adjoint/run_pyadj_mt_dt_am.sbatch adjoint/run_pyadj_mt_dt_am_q.sbatch
-    sed -i "/-r.*/d" adjoint/run_pyadj_mt.sbatch
-    sed -i "/-r.*/d" adjoint/run_pyadj_mt_dt_am.sbatch
+cp -v adjoint/run_pyadj_${misfit_prefix}.sbatch adjoint/run_pyadj_${misfit_prefix}_q.sbatch
+    sed -i "/-r.*/d" adjoint/run_pyadj_${misfit_prefix}.sbatch
+
+elif [ $KERNELS_ATTENUATION -eq 0 ]
+then
+     echo -ne "\n|---> Elastic adjoint source <---|\n"
+     sed -i "/-r.*/d" adjoint/run_pyadj_${misfit_prefix}.sbatch
 fi
 
 check_status 0 $(basename $0)
