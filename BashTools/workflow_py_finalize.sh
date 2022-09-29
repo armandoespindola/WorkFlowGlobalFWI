@@ -32,6 +32,9 @@ mkdir -p $RESULTS/sum_adjoint
 cp -v output/*.misfit.json $RESULTS/sum_adjoint/
 cd ..
 
+mkdir -p $RESULTS/measure
+cp -v measure/output/* $RESULTS/measure/
+
 cd line_search
 mkdir -p $RESULTS/line_search
 

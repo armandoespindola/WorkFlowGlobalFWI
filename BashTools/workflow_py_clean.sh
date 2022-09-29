@@ -13,11 +13,11 @@ fi
 
 
 PAR_INV=$1
-verbose=$2
+WIN=$2
+verbose=$3
 
 folder=("converter"
            "proc"
-           "windows"
            "measure"
            "stations"
            "filter"
@@ -27,6 +27,9 @@ folder=("converter"
 	   "seis/proc"
        "seis/raw" )
 
+if [ $WIN -eq 1 ]; then 
+    folder[${#folder}]="windows"
+fi
 
 
 # Loading env variables

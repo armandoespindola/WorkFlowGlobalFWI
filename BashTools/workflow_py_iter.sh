@@ -5,13 +5,14 @@ trap " log_status 1 $(basename $0) "  ERR
 
 if [ $# -lt 2 ]
 then
-    echo "Usage: ./workflow_py_main.sh PAR_INV[file] verbose[false==0/true==1]"
+    echo "Usage: ./workflow_py_iter.sh PAR_INV[file] WIN[false==0/true==1] verbose[false==0/true==1]"
     exit 1
 fi
 
 
 PAR_INV=$1
-verbose=$2
+WIN=$2
+verbose=$3
 
 
 # Loading env variables and utilities
@@ -44,15 +45,8 @@ cd $WORK_DIR
 rm -fv $WORKFLOW_LOG_FILE
     
 
-# Compute Forward Simulation
-cd $WORK_DIR
-workflow_py_forward.sh $PAR_INV 1 $verbose 
-check_status $?
-
-
 # Compute windows, misfit and adjoint source
 cd $WORK_DIR
-WIN=1
 # Set up workflow python
 workflow_py_setup.sh $PAR_INV $WIN $verbose
 check_status $?
