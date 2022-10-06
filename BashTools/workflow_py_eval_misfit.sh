@@ -28,6 +28,13 @@ function copy_synthetic_data(){
 function compute_misfit(){
     cd $WORKFLOW_DIR
     events_list=$(grep -v ^# "${WORKFLOW_DIR}/${EVENT_FILE}" | sed "s/[a-z]0*//g")
+    events_name=$(grep -v ^# "${WORKFLOW_DIR}/${EVENT_FILE}")
+    misfit=$(grep ^misfit ${WORKFLOW_DIR}/settings.yml | cut -d: -f2 | xargs)
+    misfit_prefix=${misfit/'misfit_'/}
+    echo "#########"
+    echo "misfit: "$misfit
+    echo "#########"
+    
     cd proc
     slurm_monitor.sh "run_preprocessing.sbatch" "$events_list" $verbose
     check_status $?
@@ -35,9 +42,9 @@ function compute_misfit(){
     cd ..
 
     cd measure
-    slurm_monitor.sh "run_measureadj.sbatch" "$events_list" $verbose
+    slurm_monitor.sh "run_measureadj_${misfit_prefix}.sbatch" "$events_list" $verbose
     check_status $?
-    echo "run_measureadj: done"
+    echo "run_measureadj_${misfit_prefix}: done"
     cd ..
 
     # cd adjoint
@@ -48,7 +55,7 @@ function compute_misfit(){
 
 
     #python print_linesearch.py "."
-    python generate_path_files.py $LS_MISFIT
+    python generate_path_files.py "misfit"
     check_status $?
 
     cp fval line_search/

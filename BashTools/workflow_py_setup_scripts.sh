@@ -69,7 +69,7 @@ if [ $# -lt 2 ]; then
 fi
 
 PAR_INV=$1
-verbose=$3
+verbose=$2
 
 
 . workflow_py_load_config.sh $PAR_INV $verbose
