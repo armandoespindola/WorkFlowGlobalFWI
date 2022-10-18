@@ -1,33 +1,19 @@
-############################
-# PARAMETERS FOR INVERSION #
-############################
+# PARAMETERS FOR INVERSION
 
 SPECFEM_DIR=~/specfem3d_globe
 WORK_DIR=$SCRATCH
 SIMULATION_DIR=$WORK_DIR/basemodel
-WORKFLOW_DIR=$WORK_DIR/data_processing
+WORKFLOW_DIR=$WORK_DIR/DataProcessingFWI
 EVENT_FILE=event_list
 WORKFLOW_LOG_FILE=${WORK_DIR}/log_workflow
 RESULTS=${WORK_DIR}/ITER
-
-##############################
-# KERNELS ATTENUATION VALUES #
-# 0 elastic                  #
-# 1 elastic and anelastic    #
-# 2 anelastic(only Q)        #
-##############################
-
 KERNELS_ATTENUATION=1
 
-
-#############################
-# SBATCH GENERAL PARAMETERS #
-#############################
-
+# SBATCH GENERAL PARAMETERS
 SBATCH_DIR=output
-MPIEXEC="srun -n"
-SBATCH_OPTIONAL=""
-SBATCH_ACCOUNT=""
+MPIEXEC="ibrun -n"
+SBATCH_OPTIONAL="export UCX_TLS=\"knem,dc_x\""
+SBATCH_ACCOUNT="EAR21003"
 
 # We are following specfem default directory example
 # $SYNT_DATA_DIR/<event>/OUTPUT_FILES/<data_file>
@@ -41,19 +27,19 @@ OBS_DATA_DIR=$WORK_DIR/dq_model
 #########################################
 
 SBATCH_FORWARD=forward.sbatch
-FORWARD_TIME="01:00:00"
-FORWARD_PARTITION="debug"
+FORWARD_TIME="00:20:00"
+FORWARD_PARTITION="flex"
 
 SBATCH_ADJOINT=adjoint.sbatch
-ADJOINT_TIME="01:00:00"
-ADJOINT_PARTITION="debug"
+ADJOINT_TIME="00:45:00"
+ADJOINT_PARTITION="flex"
 
 SBATCH_MESHER=mesher.sbatch
-MESHER_TIME="01:00:00"
-MESHER_PARTITION="debug"
+MESHER_TIME="00:15:00"
+MESHER_PARTITION="flex"
 
 # NUMBER OF SIMULTANEOUS RUNS
-NRUNS=8
+NRUNS=12
 # NUMBER OF CORES IN COMPUTER ARCHITECTURE
 ARCH_PROC=56
 
@@ -92,14 +78,14 @@ KERNEL_INVHESS_BIN=./bin.kernel/xinv_hess
 # KERNEL SMOOTHING
 KERNEL_SMOOTH_INPUT="$KERNEL_SUM_OUTPUT"
 KERNEL_OUTPUT_FILE="${RESULTS}/gradient.bp"
-SIGMA_H="700.0"
-SIGMA_V="150.0"
+SIGMA_H="400.0"
+SIGMA_V="100.0"
 GPU_MODE=".false."
 KERNEL_SMOOTH_BIN=./bin/xsmooth_sem_adios
 
 SBATCH_KERNEL=kernel_processing.sbatch
 KERNEL_TIME="01:00:00"
-KERNEL_PARTITION="debug"
+KERNEL_PARTITION="development"
 
 ##############################
 ##### OPTIMIZATION ###########
@@ -113,9 +99,10 @@ GRAD_FILE="${RESULTS}/gradient.bp"
 PRECOND_FILE="${RESULTS}/invhess.bp"
 SD_BIN=./bin.kernel/xsteepDescent
 
+
 # NLCG
-GRAD_FILE_OLD=${WORK_DIR}/IT1_f1/gradient.bp
-DIRECTION_FILE_OLD=${WORK_DIR}/IT1_f1/direction.bp
+GRAD_FILE_OLD=${WORK_DIR}/ITER11/gradient.bp
+DIRECTION_FILE_OLD=${WORK_DIR}/ITER11/direction.bp
 GRAD_FILE_NEW="${RESULTS}/gradient.bp"
 NLCG_BIN=./bin.kernel/xcg_direction
 PRECOND_FILE_NLCG="${RESULTS}/invhess.bp"
@@ -123,11 +110,12 @@ PRECOND_FILE_NLCG="${RESULTS}/invhess.bp"
 # LBFGS
 LBFGS_PATH_FILE=$RESULTS/lbfgs_input
 LBFGS_BIN=./bin.kernel/xlbfgs
+#LBFGS_H0_FILE=""
 LBFGS_H0_FILE="${RESULTS}/invhess.bp"
 
 SBATCH_OPT=compute_direction.sbatch
 OPT_TIME="01:00:00"
-OPT_PARTITION="debug"
+OPT_PARTITION="development"
 
 ##############################
 ##### LINE SEARCH ############
@@ -144,4 +132,5 @@ GTP_OLD=""
 
 SBATCH_LS=update_model.sbatch
 LS_TIME="01:00:00"
-LS_PARTITION="debug"
+LS_PARTITION="development"
+LS_MISFIT="misfit_dt_am"
