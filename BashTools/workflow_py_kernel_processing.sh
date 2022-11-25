@@ -99,13 +99,13 @@ fi
 # Kernel Smoothing
 
 KERNEL_NAME=$(echo $(grep -o .*kl.* $KERNEL_PARFILE ) | sed "s/ /,/g")
-HESS_NAME=$(echo $KERNEL_NAME | sed "s/^/,/g" | sed "s/,/,hess_/g")
+#HESS_NAME=$(echo $KERNEL_NAME | sed "s/^/,/g" | sed "s/,/,hess_/g")
 
 if [ ! -e $KERNEL_SMOOTH_BIN ]; then echo "$KERNEL_SMOOTH_BIN not found"; exit 1; fi
 sed -i "s|:kernel_smooth_bin:|$KERNEL_SMOOTH_BIN|g" $SBATCH_KERNEL
 sed -i "s/:SIGMA_H:/$SIGMA_H/g" $SBATCH_KERNEL
 sed -i "s/:SIGMA_V:/$SIGMA_V/g" $SBATCH_KERNEL
-sed -i "s/:KERNEL_NAME:/$KERNEL_NAME$HESS_NAME/g" $SBATCH_KERNEL
+sed -i "s/:KERNEL_NAME:/$KERNEL_NAME/g" $SBATCH_KERNEL
 sed -i "s|:INPUT_FILE:|$KERNEL_SMOOTH_INPUT|g" $SBATCH_KERNEL
 sed -i "s|:SOLVER_FILE:|$SOLVER_FILE|g" $SBATCH_KERNEL
 sed -i "s|:OUTPUT_FILE:|$KERNEL_OUTPUT_FILE|g" $SBATCH_KERNEL
