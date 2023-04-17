@@ -24,7 +24,14 @@ verbose=$3
 # Loading env variables
 . workflow_py_load_config.sh $PAR_INV $verbose
 check_status $?
-events_list=$(grep -v ^# "${WORKFLOW_DIR}/${EVENT_FILE}" | sed "s/[a-z]0*//g")
+events=($(grep -v ^# "$WORKFLOW_DIR/$EVENT_FILE"))
+nevents=${#events[@]}
+events_list=""
+for ((i=1;i<=nevents;i++))
+do
+    events_list=$events_list" $i"
+done
+
 events_name=$(grep -v ^# "${WORKFLOW_DIR}/${EVENT_FILE}")
 misfit=$(grep ^misfit ${WORKFLOW_DIR}/settings.yml | cut -d: -f2 | xargs)
 misfit_prefix=${misfit/'misfit_'/}
