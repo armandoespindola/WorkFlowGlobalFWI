@@ -1,3 +1,4 @@
+#!/bin/bash
 trap " clean_data " ERR SIGINT
 
 function clean_data() {
